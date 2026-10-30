@@ -6,8 +6,18 @@
 <title>Bảng xét hạnh kiểm thành viên tổ</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/lucide@1/dist/umd/lucide.min.js"></script>
+<!-- THƯ VIỆN NGOÀI: LZString dùng để nén dữ liệu đồng bộ -->
 <script>var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",e={};function t(r,o){if(!e[r]){e[r]={};for(var n=0;n<r.length;n++)e[r][r.charAt(n)]=n}return e[r][o]}var i={compressToBase64:function(r){if(null==r)return"";var n=i._compress(r,6,function(r){return o.charAt(r)});switch(n.length%4){default:case 0:return n;case 1:return n+"===";case 2:return n+"==";case 3:return n+"="}},decompressFromBase64:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(n){return t(o,r.charAt(n))})},compressToUTF16:function(o){return null==o?"":i._compress(o,15,function(o){return r(o+32)})+" "},decompressFromUTF16:function(r){return null==r?"":""==r?null:i._decompress(r.length,16384,function(o){return r.charCodeAt(o)-32})},compressToUint8Array:function(r){for(var o=i.compress(r),n=new Uint8Array(2*o.length),e=0,t=o.length;e<t;e++){var s=o.charCodeAt(e);n[2*e]=s>>>8,n[2*e+1]=s%256}return n},decompressFromUint8Array:function(o){if(null==o)return i.decompress(o);for(var n=new Array(o.length/2),e=0,t=n.length;e<t;e++)n[e]=256*o[2*e]+o[2*e+1];var s=[];return n.forEach(function(o){s.push(r(o))}),i.decompress(s.join(""))},compressToEncodedURIComponent:function(r){return null==r?"":i._compress(r,6,function(r){return n.charAt(r)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:(r=r.replace(/ /g,"+"),i._decompress(r.length,32,function(o){return t(n,r.charAt(o))}))},compress:function(o){return i._compress(o,16,function(o){return r(o)})},_compress:function(r,o,n){if(null==r)return"";var e,t,i,s={},u={},a="",p="",c="",l=2,f=3,h=2,d=[],m=0,v=0;for(i=0;i<r.length;i+=1)if(a=r.charAt(i),Object.prototype.hasOwnProperty.call(s,a)||(s[a]=f++,u[a]=!0),p=c+a,Object.prototype.hasOwnProperty.call(s,p))c=p;else{if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++),s[p]=f++,c=String(a)}if(""!==c){if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++)}for(t=2,e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;for(;;){if(m<<=1,v==o-1){d.push(n(m));break}v++}return d.join("")},decompress:function(r){return null==r?"":""==r?null:i._decompress(r.length,32768,function(o){return r.charCodeAt(o)})},_decompress:function(o,n,e){var t,i,s,u,a,p,c,l=[],f=4,h=4,d=3,m="",v=[],g={val:e(0),position:n,index:1};for(t=0;t<3;t+=1)l[t]=t;for(s=0,a=Math.pow(2,2),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 2:return""}for(l[3]=c,i=c,v.push(c);;){if(g.index>o)return"";for(s=0,a=Math.pow(2,d),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(c=s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 2:return v.join("")}if(0==f&&(f=Math.pow(2,d),d++),l[c])m=l[c];else{if(c!==h)return null;m=i+i.charAt(0)}v.push(m),l[h++]=i+m.charAt(0),i=m,0==--f&&(f=Math.pow(2,d),d++)}}};return i}();"function"==typeof define&&define.amd?define(function(){return LZString}):"undefined"!=typeof module&&null!=module?module.exports=LZString:"undefined"!=typeof angular&&null!=angular&&angular.module("LZString",[]).factory("LZString",function(){return LZString});</script>
 <style>
+/* ============================================================
+   PHẦN 02 - CSS / GIAO DIỆN
+   02.1: Biến màu và thiết lập chung
+   02.2: Đăng nhập
+   02.3: Màn hình chính, bảng điểm và nút thao tác
+   02.4: Bảng điều khiển, modal và thông báo
+   02.5: Responsive cho điện thoại
+   ============================================================ */
+/* 02.1 - BIẾN MÀU VÀ THIẾT LẬP CHUNG */
 :root{
   --bg:#faf9f4; --card:#ffffff; --text:#0f172a; --muted:#64748b;
   --accent:#297a2e; --accent-soft:rgba(41,122,46,.14);
@@ -29,6 +39,7 @@ body{
 .font-display{font-family:'Baloo 2',cursive}
 .hidden{display:none!important}
 
+/* 02.2 - GIAO DIỆN ĐĂNG NHẬP */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
   background:radial-gradient(1200px 600px at 80% -10%,var(--accent-soft),transparent 60%),
              radial-gradient(900px 500px at 0% 110%,var(--accent2-soft),transparent 55%),var(--bg);}
@@ -64,6 +75,7 @@ body{
 .err{color:var(--yeu);font-size:12.5px;min-height:16px;text-align:center}
 .login-foot{margin-top:18px;text-align:center;font-size:12px;color:var(--muted)}
 
+/* 02.3 - GIAO DIỆN CHÍNH, BẢNG ĐIỂM VÀ CÁC NÚT */
 .app{max-width:1180px;margin:0 auto;padding:18px 18px 120px}
 .topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
 .brand{display:flex;align-items:center;gap:10px;flex:1;min-width:200px}
@@ -173,6 +185,7 @@ table.tbl tr:hover td{background:#fcfbf7}
 .fab .count{position:absolute;top:-4px;right:-4px;background:var(--yeu);color:#fff;font-size:11px;
   font-weight:700;min-width:20px;height:20px;border-radius:999px;display:flex;align-items:center;
   justify-content:center;padding:0 5px;border:2px solid var(--bg)}
+/* 02.4 - BẢNG VI PHẠM, CỬA SỔ CÀI ĐẶT VÀ THÔNG BÁO */
 .panel-overlay{position:fixed;inset:0;background:rgba(15,23,42,.35);z-index:50;opacity:0;pointer-events:none;
   transition:opacity .2s}
 .panel-overlay.open{opacity:1;pointer-events:auto}
@@ -249,6 +262,7 @@ table.tbl tr:hover td{background:#fcfbf7}
   pointer-events:none;transition:all .25s;display:flex;align-items:center;gap:8px}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* 02.5 - TỐI ƯU GIAO DIỆN TRÊN ĐIỆN THOẠI */
 @media(max-width:640px){
   .app{padding:12px 10px 120px}
   .brand h1{font-size:16px}
@@ -261,6 +275,13 @@ table.tbl tr:hover td{background:#fcfbf7}
 </head>
 <body>
 
+<!-- =========================================================
+     PHẦN 03 - GIAO DIỆN HTML
+     Chứa màn hình đăng nhập, màn hình chính, bảng điều khiển và hộp thoại.
+     Sửa nội dung hiển thị tại đây; xử lý thao tác nằm trong phần JavaScript.
+     ========================================================= -->
+
+<!-- 03.1 - MÀN HÌNH ĐĂNG NHẬP -->
 <div id="loginView" class="login-wrap">
   <div class="login-card">
     <h1 class="font-display">XÉT HẠNH KIỂM<br>Thành viên tổ</h1>
@@ -298,6 +319,7 @@ table.tbl tr:hover td{background:#fcfbf7}
   </div>
 </div>
 
+<!-- 03.2 - MÀN HÌNH CHÍNH / BẢNG HẠNH KIỂM -->
 <div id="appView" class="app hidden">
   <div class="topbar">
     <div class="brand">
@@ -344,6 +366,7 @@ table.tbl tr:hover td{background:#fcfbf7}
   </div>
 </div>
 
+<!-- 03.3 - NÚT NHANH VÀ BẢNG VI PHẠM -->
 <button class="fab hidden" id="fabBtn" data-act="togglePanel" title="Chi tiết vi phạm">
   <i data-lucide="alert-triangle" style="width:24px;height:24px"></i>
   <span class="count hidden" id="fabCount">0</span>
@@ -363,6 +386,7 @@ table.tbl tr:hover td{background:#fcfbf7}
   <div class="panel-body" id="panelBody"></div>
 </div>
 
+<!-- 03.4 - HỘP THOẠI CÀI ĐẶT QUẢN TRỊ -->
 <div class="modal-overlay hidden" id="adminModal">
   <div class="modal">
     <div class="modal-head">
@@ -381,6 +405,7 @@ table.tbl tr:hover td{background:#fcfbf7}
 
 
 
+<!-- 03.5 - THÀNH PHẦN DÙNG CHUNG: NHẬP FILE VÀ THÔNG BÁO -->
 <input type="file" id="importFile" accept="application/json" class="hidden">
 <div class="toast" id="toast"></div>
 
@@ -389,23 +414,33 @@ table.tbl tr:hover td{background:#fcfbf7}
     'use strict';
 
     /* ============================================================
-     * MỤC LỤC CODE — tìm theo tên phần để sửa/nâng cấp nhanh:
-     * 1. CẤU HÌNH VÀ DỮ LIỆU MẪU
-     * 2. NÂNG CẤP CẤU TRÚC DỮ LIỆU CŨ (migrate)
-     * 3. ĐỌC / GHI DỮ LIỆU TRÊN MÁY VÀ ĐỒNG BỘ CLOUD
-     * 4. HÀM TIỆN ÍCH, TÍNH ĐIỂM VÀ PHÂN QUYỀN
-     * 5. HIỂN THỊ GIAO DIỆN
-     * 6. XỬ LÝ ĐĂNG NHẬP VÀ CÁC SỰ KIỆN
-     * 7. CẬP NHẬT ĐIỂM HIỂN THỊ
+     * MỤC LỤC CODE — tìm theo số phần:
+     * 04. Cấu hình, biến trạng thái và dữ liệu mẫu
+     * 05. Chuyển đổi / tương thích dữ liệu cũ
+     * 06. Lưu trữ, sao lưu và đồng bộ dữ liệu
+     * 07. Hàm tiện ích, tính điểm, xếp loại và phân quyền
+     * 08. Render / hiển thị giao diện
+     * 09. Xử lý sự kiện click và thao tác nút
+     * 10. Xử lý sự kiện change / chọn mục / nhập file
+     * 11. Xử lý sự kiện input / cập nhật khi nhập
+     * 12. Cập nhật điểm và xếp loại trên màn hình
+     *
+     * CSS: phần 02 | HTML: phần 03 | JavaScript: phần 04–12.
      * Lưu ý: dữ liệu mẫu nằm trong defaultData(); màu sắc nằm ở :root trong CSS.
      * ============================================================ */
-    // Khóa lưu trữ: giữ nguyên để không làm mất dữ liệu người dùng hiện có.
+    // ============================================================
+    // PHẦN 04 - CẤU HÌNH, BIẾN TRẠNG THÁI VÀ DỮ LIỆU MẪU
+    // Chỉnh LS_KEY/WEEKS/cấu hình ở đây. defaultData() là dữ liệu mặc định.
+    // ============================================================
     var LS_KEY = 'hanhDiemApp_v3';
     var WEEKS = ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'];
     var DEFAULT_SYNC_TOPIC = 'hd-a7f3k9m2x5q8z1w4';
     var NTFY = 'https://ntfy.sh/';
     var CHUNK = 2500;
-    var SYNC_POLL = 3000;
+    // ============================================================
+    // PHẦN 07 - HÀM TIỆN ÍCH VÀ XỬ LÝ NGHIỆP VỤ
+    // Tính điểm, xếp loại, lấy dữ liệu lớp/tổ/tháng và kiểm tra quyền.
+    // ============================================================
     function uid() { return 'id' + Math.random().toString(36).slice(2, 9); }
     function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
     function num(v) { var n = parseFloat(v); return isNaN(n) ? 0 : n; }
@@ -421,7 +456,6 @@ table.tbl tr:hover td{background:#fcfbf7}
     }
     function defaultTo(key) { return { tenTo: key, monthOrder: ['Tháng 10'], months: { 'Tháng 10': { members: defaultMembers(), weeks: emptyWeeks() } } }; }
     function defaultLop(key) { return { tenLop: key, toOrder: ['Tổ 1'], tos: { 'Tổ 1': defaultTo('Tổ 1') } }; }
-    // SỬA DỮ LIỆU MẪU: danh sách thành viên, vi phạm và ngưỡng xếp loại ở đây.
     function defaultData() {
         return {
             adminPass: '12340', allowPublicEdit: false, editors: [],
@@ -441,6 +475,10 @@ table.tbl tr:hover td{background:#fcfbf7}
             thresholds: [{ bac: 'Tốt', min: 85 }, { bac: 'Khá', min: 70 }, { bac: 'Trung bình', min: 50 }, { bac: 'Yếu', min: 0 }]
         };
     }
+    // ============================================================
+    // PHẦN 05 - CHUYỂN ĐỔI VÀ TƯƠNG THÍCH DỮ LIỆU CŨ
+    // Khi đổi cấu trúc dữ liệu, cập nhật migrate() để dữ liệu cũ vẫn dùng được.
+    // ============================================================
     function migrate(d) {
         if (!d)
             return defaultData();
@@ -458,10 +496,13 @@ table.tbl tr:hover td{background:#fcfbf7}
             delete d.tos;
             delete d.tenTo;
         }
+        var defaults = null;
+        if (!d.violations || !d.thresholds)
+            defaults = defaultData();
         if (!d.violations)
-            d.violations = defaultData().violations;
+            d.violations = defaults.violations;
         if (!d.thresholds)
-            d.thresholds = defaultData().thresholds;
+            d.thresholds = defaults.thresholds;
         if (!d.editors)
             d.editors = [];
         if (d.adminPass == null)
@@ -470,6 +511,10 @@ table.tbl tr:hover td{background:#fcfbf7}
             d.allowPublicEdit = false;
         return d;
     }
+    // ============================================================
+    // PHẦN 06 - LƯU TRỮ, SAO LƯU VÀ ĐỒNG BỘ DỮ LIỆU
+    // Gồm lưu trên trình duyệt, mã hóa/nén và đồng bộ qua mạng.
+    // ============================================================
     function load() {
         try {
             var raw = localStorage.getItem(LS_KEY) || localStorage.getItem('hanhDiemApp_v2') || localStorage.getItem('hanhDiemApp_v1');
@@ -501,10 +546,6 @@ table.tbl tr:hover td{background:#fcfbf7}
             return null;
         }
     }
-    function updateHash() { try {
-        history.replaceState(null, '', location.pathname + location.search + '#d=' + encodeData());
-    }
-    catch (e) { } }
     var data = load();
     try {
         var hm = location.hash.match(/#d=(.+)/);
@@ -525,9 +566,8 @@ table.tbl tr:hover td{background:#fcfbf7}
         lop: firstLop, to: firstTo, month: firstMonth, week: 'Tuần 1',
         panelOpen: false, panelTab: 'catalog', panelTarget: null,
         adminOpen: false, adminTab: 'lop',
-        syncTopic: null, lastPublishedSid: 0, lastAppliedSid: 0, syncOk: true, lastUndo: null, pendingSid: 0, pendingSince: 0, sseTimer: null, lastKnownRemoteV: 0, dirty: false
+        lastPublishedSid: 0, lastAppliedSid: 0, syncOk: true, pendingSid: 0, pendingSince: 0, lastKnownRemoteV: 0, dirty: false
     };
-    /* ---------- sync (ntfy chunked) ---------- */
     function getSyncTopic() {
         var m = location.hash.match(/sync=([a-zA-Z0-9_-]+)/);
         return m ? m[1] : DEFAULT_SYNC_TOPIC;
@@ -714,7 +754,6 @@ table.tbl tr:hover td{background:#fcfbf7}
             legacyPoll(groups);
         }).catch(function () { setSyncStatus(false); });
     }
-    /* ---------- persistence ---------- */
     var saveTimer = null;
     function persist() { try {
         data._v = Date.now();
@@ -733,38 +772,19 @@ table.tbl tr:hover td{background:#fcfbf7}
         clearTimeout(toastTimer);
         toastTimer = setTimeout(function () { t.classList.remove('show'); }, 1800);
     }
-    /* ---------- helpers ---------- */
     function curLop() { return data.lops[state.lop]; }
     function curTo() { var l = curLop(); return l ? l.tos[state.to] : null; }
     function curMonth() { var t = curTo(); return t ? t.months[state.month] : null; }
-    function getRec(mid) {
-        var m = curMonth();
-        if (!m)
-            return { loi: '', diemTru: 0, diemBD: 100 };
-        var w = m.weeks[state.week];
-        if (!w)
-            return { loi: '', diemTru: 0, diemBD: 100 };
-        if (!w.recs[mid])
-            w.recs[mid] = { loi: '', diemTru: 0, diemBD: 100 };
-        var r = w.recs[mid];
-        if (r.diemBD == null)
-            r.diemBD = 100;
-        return r;
-    }
     function getRecFor(week, mid) {
-        var m = curMonth();
-        if (!m)
+        var month = curMonth(), weekData = month && month.weeks[week];
+        if (!weekData)
             return { loi: '', diemTru: 0, diemBD: 100 };
-        var w = m.weeks[week];
-        if (!w)
-            return { loi: '', diemTru: 0, diemBD: 100 };
-        if (!w.recs[mid])
-            w.recs[mid] = { loi: '', diemTru: 0, diemBD: 100 };
-        var r = w.recs[mid];
-        if (r.diemBD == null)
-            r.diemBD = 100;
-        return r;
+        var rec = weekData.recs[mid] || (weekData.recs[mid] = { loi: '', diemTru: 0, diemBD: 100 });
+        if (rec.diemBD == null)
+            rec.diemBD = 100;
+        return rec;
     }
+    function getRec(mid) { return getRecFor(state.week, mid); }
     function xepLoai(d) {
         var t = data.thresholds.slice().sort(function (a, b) { return b.min - a.min; });
         for (var i = 0; i < t.length; i++) {
@@ -791,6 +811,10 @@ table.tbl tr:hover td{background:#fcfbf7}
             c++; }); });
         return c;
     }
+    // ============================================================
+    // PHẦN 08 - HIỂN THỊ VÀ RENDER GIAO DIỆN
+    // Các hàm render... tạo nội dung HTML cho từng màn hình.
+    // ============================================================
     function icons() { if (window.lucide) {
         try {
             lucide.createIcons();
@@ -828,7 +852,6 @@ table.tbl tr:hover td{background:#fcfbf7}
             s.appendChild(o);
         });
     }
-    // Kết xuất giao diện chính. Khi thêm màn hình mới, cân nhắc tách thành hàm render riêng.
     function renderApp() {
         var l = curLop(), t = curTo();
         var sn = document.getElementById('subNameWrap');
@@ -1099,6 +1122,10 @@ table.tbl tr:hover td{background:#fcfbf7}
         b.innerHTML = h;
         icons();
     }
+    // ============================================================
+    // PHẦN 09 - BẮT SỰ KIỆN CLICK / THAO TÁC NÚT
+    // Nút HTML khai báo data-act; xử lý hành động tương ứng tại đây.
+    // ============================================================
     // Bộ điều phối thao tác nút: các nút HTML dùng data-act để đi vào đây.
     document.addEventListener('click', function (e) {
         var el = e.target.closest('[data-act]');
@@ -1611,8 +1638,15 @@ table.tbl tr:hover td{background:#fcfbf7}
             return;
         }
     });
+    // ============================================================
+    // PHẦN 10 - BẮT SỰ KIỆN CHANGE / CHỌN LỚP, TỔ, THÁNG, NHẬP FILE
+    // ============================================================
     document.addEventListener('change', function (e) {
         var el = e.target;
+        if (el && el.dataset && el.dataset.abind === 'violDiem' && state.adminOpen) {
+            renderAdmin();
+            return;
+        }
         if (el.id === 'lopSelect') {
             state.lop = el.value;
             var l = curLop();
@@ -1668,9 +1702,12 @@ table.tbl tr:hover td{background:#fcfbf7}
             return;
         }
     });
+    // ============================================================
+    // PHẦN 11 - BẮT SỰ KIỆN INPUT / CẬP NHẬT DỮ LIỆU KHI NHẬP
+    // data-bind: dữ liệu bảng điểm; data-abind: dữ liệu phần quản trị.
+    // ============================================================
     document.addEventListener('input', function (e) {
         var el = e.target;
-        // Lấy giá trị ngay từ đầu để cả input data-bind và data-abind đều đọc được.
         var val = el.value;
         if (el.dataset.bind) {
             var mid = el.dataset.mid, bind = el.dataset.bind;
@@ -1815,12 +1852,9 @@ table.tbl tr:hover td{background:#fcfbf7}
             }
         }
     });
-    document.addEventListener('change', function (e) {
-        var el = e.target;
-        if (el && el.dataset && el.dataset.abind === 'violDiem' && state.adminOpen) {
-            renderAdmin();
-        }
-    });
+    // ============================================================
+    // PHẦN 12 - CẬP NHẬT ĐIỂM VÀ XẾP LOẠI TRÊN MÀN HÌNH
+    // ============================================================
     function updateComputed(mid) {
         var r = getRec(mid), conlai = r.diemBD - r.diemTru, xl = xepLoai(conlai);
         var cEl = document.querySelector('[data-out="conlai"][data-mid="' + mid + '"]');
