@@ -416,7 +416,7 @@ table.tbl tr:hover td{background:#fcfbf7}
     /* ============================================================
      * MỤC LỤC CODE — tìm theo số phần:
      * 04. Cấu hình, biến trạng thái và dữ liệu mẫu
-     * 05. Chuyển đổi / tương thích dữ liệu cũ
+     * 05. Chuyển đổi dữ liệu cũ và liên kết ID vi phạm
      * 06. Lưu trữ, sao lưu và đồng bộ dữ liệu
      * 07. Hàm tiện ích, tính điểm, xếp loại và phân quyền
      * 08. Render / hiển thị giao diện
@@ -432,11 +432,13 @@ table.tbl tr:hover td{background:#fcfbf7}
     // PHẦN 04 - CẤU HÌNH, BIẾN TRẠNG THÁI VÀ DỮ LIỆU MẪU
     // Chỉnh LS_KEY/WEEKS/cấu hình ở đây. defaultData() là dữ liệu mặc định.
     // ============================================================
+    // Khóa lưu trữ: giữ nguyên để không làm mất dữ liệu người dùng hiện có.
     var LS_KEY = 'hanhDiemApp_v3';
     var WEEKS = ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'];
     var DEFAULT_SYNC_TOPIC = 'hd-a7f3k9m2x5q8z1w4';
     var NTFY = 'https://ntfy.sh/';
     var CHUNK = 2500;
+    var SYNC_POLL = 3000;
     // ============================================================
     // PHẦN 07 - HÀM TIỆN ÍCH VÀ XỬ LÝ NGHIỆP VỤ
     // Tính điểm, xếp loại, lấy dữ liệu lớp/tổ/tháng và kiểm tra quyền.
@@ -456,6 +458,7 @@ table.tbl tr:hover td{background:#fcfbf7}
     }
     function defaultTo(key) { return { tenTo: key, monthOrder: ['Tháng 10'], months: { 'Tháng 10': { members: defaultMembers(), weeks: emptyWeeks() } } }; }
     function defaultLop(key) { return { tenLop: key, toOrder: ['Tổ 1'], tos: { 'Tổ 1': defaultTo('Tổ 1') } }; }
+    // SỬA DỮ LIỆU MẪU: danh sách thành viên, vi phạm và ngưỡng xếp loại ở đây.
     function defaultData() {
         return {
             adminPass: '12340', allowPublicEdit: false, editors: [],
@@ -479,6 +482,77 @@ table.tbl tr:hover td{background:#fcfbf7}
     // PHẦN 05 - CHUYỂN ĐỔI VÀ TƯƠNG THÍCH DỮ LIỆU CŨ
     // Khi đổi cấu trúc dữ liệu, cập nhật migrate() để dữ liệu cũ vẫn dùng được.
     // ============================================================
+    // ============================================================
+    // PHẦN 05.1 - LIÊN KẾT VI PHẠM VỚI DỮ LIỆU ĐÃ GHI
+    // Mỗi lượt vi phạm lưu bằng ID, không phụ thuộc tên/điểm đang hiển thị.
+    // ============================================================
+    function formatViolationItem(item) {
+        var v = data.violations.find(function (x) { return x.id === item.id; });
+        if (!v) return '';
+        return (data.violations.indexOf(v) + 1) + '. ' + v.name + ' (−' + v.diem + 'đ)';
+    }
+    function updateViolationRecord(r) {
+        if (!r) return;
+        if (!Array.isArray(r.vpItems)) r.vpItems = [];
+        if (typeof r.loiManual !== 'string') r.loiManual = '';
+        var total = r.vpItems.reduce(function (sum, item) {
+            var v = data.violations.find(function (x) { return x.id === item.id; });
+            return sum + (v ? (Number(v.diem) || 0) : 0);
+        }, 0);
+        r.diemTru = (Number(r.diemTruThuCong) || 0) + total;
+        var lines = r.vpItems.map(formatViolationItem).filter(Boolean);
+        r.loi = [r.loiManual, lines.join('\n')].filter(Boolean).join(r.loiManual ? '\n' : '');
+    }
+    function refreshAllViolationRecords() {
+        Object.keys(data.lops || {}).forEach(function (lk) {
+            var lop = data.lops[lk];
+            Object.keys(lop.tos || {}).forEach(function (tk) {
+                var to = lop.tos[tk];
+                Object.keys(to.months || {}).forEach(function (mk) {
+                    var month = to.months[mk];
+                    Object.keys(month.weeks || {}).forEach(function (wk) {
+                        var recs = month.weeks[wk].recs || {};
+                        Object.keys(recs).forEach(function (mid) { updateViolationRecord(recs[mid]); });
+                    });
+                });
+            });
+        });
+    }
+    function migrateViolationRecords(d) {
+        var byName = {};
+        (d.violations || []).forEach(function (v) { byName[v.name] = v; });
+        Object.keys(d.lops || {}).forEach(function (lk) {
+            var lop = d.lops[lk];
+            Object.keys(lop.tos || {}).forEach(function (tk) {
+                var to = lop.tos[tk];
+                Object.keys(to.months || {}).forEach(function (mk) {
+                    var month = to.months[mk];
+                    Object.keys(month.weeks || {}).forEach(function (wk) {
+                        var recs = month.weeks[wk].recs || {};
+                        Object.keys(recs).forEach(function (mid) {
+                            var r = recs[mid];
+                            if (r._vpMigrated) return;
+                            var oldTotal = Number(r.diemTru) || 0, items = [], manual = [];
+                            String(r.loi || '').split(/\r?\n/).forEach(function (line) {
+                                var m = line.match(/^\s*\d+\.\s*(.*?)\s*\(−[\d.]+đ\)\s*$/);
+                                var v = m && byName[m[1]];
+                                if (v) items.push({ id: v.id });
+                                else if (line.trim()) manual.push(line);
+                            });
+                            var linkedTotal = items.reduce(function (sum, item) {
+                                var v = d.violations.find(function (x) { return x.id === item.id; });
+                                return sum + (v ? Number(v.diem) || 0 : 0);
+                            }, 0);
+                            r.vpItems = items;
+                            r.loiManual = manual.join('\n');
+                            r.diemTruThuCong = oldTotal - linkedTotal;
+                            r._vpMigrated = true;
+                        });
+                    });
+                });
+            });
+        });
+    }
     function migrate(d) {
         if (!d)
             return defaultData();
@@ -496,19 +570,17 @@ table.tbl tr:hover td{background:#fcfbf7}
             delete d.tos;
             delete d.tenTo;
         }
-        var defaults = null;
-        if (!d.violations || !d.thresholds)
-            defaults = defaultData();
         if (!d.violations)
-            d.violations = defaults.violations;
+            d.violations = defaultData().violations;
         if (!d.thresholds)
-            d.thresholds = defaults.thresholds;
+            d.thresholds = defaultData().thresholds;
         if (!d.editors)
             d.editors = [];
         if (d.adminPass == null)
             d.adminPass = '12340';
         if (d.allowPublicEdit == null)
             d.allowPublicEdit = false;
+        migrateViolationRecords(d);
         return d;
     }
     // ============================================================
@@ -546,6 +618,10 @@ table.tbl tr:hover td{background:#fcfbf7}
             return null;
         }
     }
+    function updateHash() { try {
+        history.replaceState(null, '', location.pathname + location.search + '#d=' + encodeData());
+    }
+    catch (e) { } }
     var data = load();
     try {
         var hm = location.hash.match(/#d=(.+)/);
@@ -561,13 +637,16 @@ table.tbl tr:hover td{background:#fcfbf7}
     var firstLop = data.lopOrder[0];
     var firstTo = data.lops[firstLop].toOrder[0];
     var firstMonth = data.lops[firstLop].tos[firstTo].monthOrder[0];
+    migrateViolationRecords(data);
+    refreshAllViolationRecords();
     var state = {
         role: null, editorName: null,
         lop: firstLop, to: firstTo, month: firstMonth, week: 'Tuần 1',
         panelOpen: false, panelTab: 'catalog', panelTarget: null,
         adminOpen: false, adminTab: 'lop',
-        lastPublishedSid: 0, lastAppliedSid: 0, syncOk: true, pendingSid: 0, pendingSince: 0, lastKnownRemoteV: 0, dirty: false
+        syncTopic: null, lastPublishedSid: 0, lastAppliedSid: 0, syncOk: true, lastUndo: null, pendingSid: 0, pendingSince: 0, sseTimer: null, lastKnownRemoteV: 0, dirty: false
     };
+    /* ---------- sync (ntfy chunked) ---------- */
     function getSyncTopic() {
         var m = location.hash.match(/sync=([a-zA-Z0-9_-]+)/);
         return m ? m[1] : DEFAULT_SYNC_TOPIC;
@@ -601,42 +680,28 @@ table.tbl tr:hover td{background:#fcfbf7}
     }
     async function publishChunked(topic, payload) {
         var sid = data._v, chunks = [];
-        for (var i = 0; i < payload.length; i += CHUNK)
-            chunks.push(payload.slice(i, i + CHUNK));
+        for (var i = 0; i < payload.length; i += CHUNK) chunks.push(payload.slice(i, i + CHUNK));
         state.lastPublishedSid = sid;
         for (var c = 0; c < chunks.length; c++) {
-            var b = JSON.stringify({ sid: sid, i: c, n: chunks.length, c: chunks[c] });
+            var body = JSON.stringify({ sid: sid, i: c, n: chunks.length, c: chunks[c] });
             var ok = false;
             for (var a = 0; a < 3 && !ok; a++) {
-                try {
-                    var r = await fetch(NTFY + topic, { method: 'POST', body: b });
-                    ok = r.ok;
-                }
-                catch (e) { }
-                if (!ok)
-                    await new Promise(function (x) { setTimeout(x, 600); });
+                try { var r = await fetch(NTFY + topic, { method: 'POST', body: body }); ok = r.ok; } catch (e) {}
+                if (!ok) await new Promise(function (resolve) { setTimeout(resolve, 800); });
             }
-            if (!ok) {
-                setSyncStatus(false);
-                showToast('Lưu lên thất bại — kiểm tra mạng');
-                return;
-            }
+            if (!ok) { setSyncStatus(false); showToast('Lưu lên thất bại — dữ liệu vẫn còn trên máy'); return false; }
         }
-        state.lastKnownRemoteV = data._v;
-        state.dirty = false;
-        var d = document.getElementById('dirtyInd');
-        if (d)
-            d.classList.add('hidden');
+        state.lastKnownRemoteV = sid;
         setSyncStatus(true);
-        showToast('Đã lưu toàn bộ');
+        showToast('Đã đồng bộ toàn bộ lên Cloud');
+        return true;
     }
     async function publishCompressed(topic) {
         try {
-            if (!data._v)
-                data._v = Date.now();
+            if (!data._v) data._v = Date.now();
             if (state.lastKnownRemoteV > data._v) {
                 showToast('Có bản mới hơn — hãy bấm Làm mới trước');
-                return;
+                return false;
             }
             var raw = JSON.stringify(data);
             var comp = window.LZString ? LZString.compressToEncodedURIComponent(raw) : raw;
@@ -646,23 +711,44 @@ table.tbl tr:hover td{background:#fcfbf7}
                     state.lastKnownRemoteV = data._v;
                     state.lastPublishedSid = data._v;
                     setSyncStatus(true);
-                    showToast('Đã lưu toàn bộ lên cloud');
-                    return;
+                    showToast('Đã đồng bộ toàn bộ lên Cloud');
+                    return true;
                 }
             }
-            await publishChunked(topic, raw);
-        }
-        catch (e) {
+            return await publishChunked(topic, raw);
+        } catch (e) {
             setSyncStatus(false);
-            showToast('Lưu lên thất bại — kiểm tra mạng');
+            showToast('Cloud đang lỗi — dữ liệu vẫn được lưu trên máy');
+            return false;
         }
     }
+    var cloudRetryTimer = null, cloudRetryCount = 0, cloudSending = false;
+    function scheduleCloudRetry() {
+        if (cloudRetryTimer) return;
+        var delay = Math.min(60000, 3000 * Math.pow(2, Math.min(cloudRetryCount++, 4)));
+        cloudRetryTimer = setTimeout(function () {
+            cloudRetryTimer = null;
+            if (navigator.onLine !== false && state.dirty) publishSync();
+        }, delay);
+    }
     async function publishSync() {
-        state.dirty = false;
-        var dirtyIndicator = document.getElementById('dirtyInd');
-        if (dirtyIndicator)
-            dirtyIndicator.classList.add('hidden');
-        await publishCompressed(getSyncTopic());
+        if (cloudSending) return;
+        cloudSending = true;
+        persist();
+        var ok = await publishCompressed(getSyncTopic());
+        cloudSending = false;
+        if (ok) {
+            state.dirty = false;
+            cloudRetryCount = 0;
+            if (cloudRetryTimer) clearTimeout(cloudRetryTimer);
+            cloudRetryTimer = null;
+            var indicator = document.getElementById('dirtyInd');
+            if (indicator) indicator.classList.add('hidden');
+        } else {
+            markDirty();
+            scheduleCloudRetry();
+        }
+        return ok;
     }
     function legacyPoll(groups) {
         var sids = Object.keys(groups).map(Number).sort(function (a, b) { return b - a; });
@@ -754,16 +840,59 @@ table.tbl tr:hover td{background:#fcfbf7}
             legacyPoll(groups);
         }).catch(function () { setSyncStatus(false); });
     }
-    var saveTimer = null;
-    function persist() { try {
-        data._v = Date.now();
-        localStorage.setItem(LS_KEY, JSON.stringify(data));
+    /* ---------- persistence ---------- */
+    var saveTimer = null, cloudSaveTimer = null, localDbPromise = null;
+    // IndexedDB: kho lưu trữ chính dung lượng lớn hơn localStorage; vẫn giữ localStorage làm bản dự phòng.
+    function openLocalDB() {
+        if (!('indexedDB' in window)) return Promise.reject(new Error('Trình duyệt không hỗ trợ IndexedDB'));
+        if (localDbPromise) return localDbPromise;
+        localDbPromise = new Promise(function (resolve, reject) {
+            var request = indexedDB.open('HanhDiemStorage', 1);
+            request.onupgradeneeded = function () {
+                var db = request.result;
+                if (!db.objectStoreNames.contains('records')) db.createObjectStore('records', { keyPath: 'id' });
+            };
+            request.onsuccess = function () { resolve(request.result); };
+            request.onerror = function () { reject(request.error); };
+        });
+        return localDbPromise;
     }
-    catch (e) { } }
-    function markDirty() { state.dirty = true; var d = document.getElementById('dirtyInd'); if (d)
-        d.classList.remove('hidden'); }
-    function saveDebounce() { clearTimeout(saveTimer); saveTimer = setTimeout(function () { persist(); markDirty(); }, 500); }
-    function saveNow() { persist(); publishSync(); }
+    function writeLocalDB(snapshot) {
+        return openLocalDB().then(function (db) {
+            return new Promise(function (resolve, reject) {
+                var tx = db.transaction('records', 'readwrite');
+                tx.objectStore('records').put({ id: 'main', updatedAt: snapshot._v || Date.now(), payload: JSON.stringify(snapshot) });
+                tx.oncomplete = resolve;
+                tx.onerror = tx.onabort = function () { reject(tx.error || new Error('Không ghi được IndexedDB')); };
+            });
+        });
+    }
+    function restoreLocalDB() {
+        return openLocalDB().then(function (db) {
+            return new Promise(function (resolve, reject) {
+                var req = db.transaction('records', 'readonly').objectStore('records').get('main');
+                req.onsuccess = function () { resolve(req.result || null); };
+                req.onerror = function () { reject(req.error); };
+            });
+        }).then(function (record) {
+            if (record && record.payload && Number(record.updatedAt) > Number(data._v || 0)) {
+                var restored = migrate(JSON.parse(record.payload));
+                applyRemote(restored);
+                showToast('Đã khôi phục dữ liệu mới nhất từ bộ nhớ máy');
+            } else {
+                writeLocalDB(data).catch(function () {});
+            }
+        }).catch(function () { /* localStorage vẫn là bản dự phòng nếu IndexedDB bị chặn */ });
+    }
+    function persist() {
+        data._v = Date.now();
+        var snapshot = JSON.parse(JSON.stringify(data));
+        try { localStorage.setItem(LS_KEY, JSON.stringify(snapshot)); } catch (e) { /* IndexedDB vẫn tiếp tục lưu */ }
+        writeLocalDB(snapshot).catch(function () { /* không làm gián đoạn thao tác của người dùng */ });
+    }
+    function markDirty() { state.dirty = true; var d = document.getElementById('dirtyInd'); if (d) d.classList.remove('hidden'); }
+    function saveDebounce() { clearTimeout(saveTimer); clearTimeout(cloudSaveTimer); saveTimer = setTimeout(function () { persist(); markDirty(); cloudSaveTimer = setTimeout(function () { if (navigator.onLine !== false) publishSync(); }, 1200); }, 500); }
+    function saveNow() { persist(); markDirty(); publishSync(); }
     var toastTimer = null;
     function showToast(msg) {
         var t = document.getElementById('toast');
@@ -772,19 +901,38 @@ table.tbl tr:hover td{background:#fcfbf7}
         clearTimeout(toastTimer);
         toastTimer = setTimeout(function () { t.classList.remove('show'); }, 1800);
     }
+    /* ---------- helpers ---------- */
     function curLop() { return data.lops[state.lop]; }
     function curTo() { var l = curLop(); return l ? l.tos[state.to] : null; }
     function curMonth() { var t = curTo(); return t ? t.months[state.month] : null; }
-    function getRecFor(week, mid) {
-        var month = curMonth(), weekData = month && month.weeks[week];
-        if (!weekData)
+    function getRec(mid) {
+        var m = curMonth();
+        if (!m)
             return { loi: '', diemTru: 0, diemBD: 100 };
-        var rec = weekData.recs[mid] || (weekData.recs[mid] = { loi: '', diemTru: 0, diemBD: 100 });
-        if (rec.diemBD == null)
-            rec.diemBD = 100;
-        return rec;
+        var w = m.weeks[state.week];
+        if (!w)
+            return { loi: '', diemTru: 0, diemBD: 100 };
+        if (!w.recs[mid])
+            w.recs[mid] = { loi: '', diemTru: 0, diemBD: 100 };
+        var r = w.recs[mid];
+        if (r.diemBD == null)
+            r.diemBD = 100;
+        return r;
     }
-    function getRec(mid) { return getRecFor(state.week, mid); }
+    function getRecFor(week, mid) {
+        var m = curMonth();
+        if (!m)
+            return { loi: '', diemTru: 0, diemBD: 100 };
+        var w = m.weeks[week];
+        if (!w)
+            return { loi: '', diemTru: 0, diemBD: 100 };
+        if (!w.recs[mid])
+            w.recs[mid] = { loi: '', diemTru: 0, diemBD: 100 };
+        var r = w.recs[mid];
+        if (r.diemBD == null)
+            r.diemBD = 100;
+        return r;
+    }
     function xepLoai(d) {
         var t = data.thresholds.slice().sort(function (a, b) { return b.min - a.min; });
         for (var i = 0; i < t.length; i++) {
@@ -838,7 +986,7 @@ table.tbl tr:hover td{background:#fcfbf7}
         getSyncTopic();
         renderApp();
         pollSync();
-        setInterval(pollSync, 10000);
+        if (!state.pollTimer) state.pollTimer = setInterval(pollSync, 10000);
     }
     function fillSelect(id, items, current) {
         var s = document.getElementById(id);
@@ -852,6 +1000,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             s.appendChild(o);
         });
     }
+    // Kết xuất giao diện chính. Khi thêm màn hình mới, cân nhắc tách thành hàm render riêng.
     function renderApp() {
         var l = curLop(), t = curTo();
         var sn = document.getElementById('subNameWrap');
@@ -993,26 +1142,53 @@ table.tbl tr:hover td{background:#fcfbf7}
         document.getElementById('panel').classList.toggle('open', state.panelOpen);
         document.getElementById('panelOverlay').classList.toggle('open', state.panelOpen);
         var pt = document.getElementById('panelTarget');
-        if (state.panelTarget) {
+        var panelMonth = curMonth();
+        if (canEdit() && state.panelTab === 'catalog') {
+            var memberOptions = '<option value="">- Chọn thành viên để ghi lỗi -</option>';
+            (panelMonth ? panelMonth.members : []).forEach(function (mb) {
+                memberOptions += '<option value="' + esc(mb.id) + '"' + (state.panelTarget === mb.id ? ' selected' : '') + '>' + esc(mb.name) + '</option>';
+            });
             pt.classList.remove('hidden');
-            pt.innerHTML = 'Đang ghi lỗi cho: <strong>' + esc(memberName(state.panelTarget)) + '</strong> — ' + esc(state.week) + ' <button class="btn btn-ghost btn-sm" style="margin-left:8px;padding:3px 10px" data-act="clearPanelTarget">Hủy</button>';
-        }
-        else
+            pt.innerHTML = '<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">'
+                + '<label for="panelMemberSelect" style="font-size:13px;font-weight:700;white-space:nowrap">Thành viên:</label>'
+                + '<select id="panelMemberSelect" class="select" style="flex:1;min-width:180px;max-width:100%">' + memberOptions + '</select>'
+                + '<span style="font-size:12px;color:var(--muted)">' + esc(state.week) + '</span></div>';
+        } else if (state.panelTarget) {
+            pt.classList.remove('hidden');
+            pt.innerHTML = 'Đang xem lỗi của: <strong>' + esc(memberName(state.panelTarget)) + '</strong> — ' + esc(state.week);
+        } else {
             pt.classList.add('hidden');
+        }
         document.querySelectorAll('.panel-tab').forEach(function (b) { b.classList.toggle('active', b.dataset.tab === state.panelTab); });
         var body = document.getElementById('panelBody');
         if (state.panelTab === 'catalog') {
             var ce = canEdit() && state.panelTarget;
             var h = '';
             if (ce) {
-                h += '<p style="font-size:12px;color:var(--muted);margin-bottom:10px">Bấm vào một hành vi để ghi nhanh vào ô lỗi và tự cộng điểm trừ.</p>';
-                if (state.lastUndo && state.lastUndo.mid === state.panelTarget && state.lastUndo.week === state.week) {
-                    h += '<button class="btn btn-danger btn-sm" style="width:100%;margin-bottom:12px" data-act="undoViol"><i data-lucide="undo-2" style="width:14px;height:14px"></i>Thu hồi lỗi vừa ghi (−' + state.lastUndo.diem + 'đ)</button>';
-                }
+              h += '<p style="font-size:14px;color:var(--muted);margin-bottom:10px"></p>';
+                var targetRec = getRec(state.panelTarget);
+                if (!Array.isArray(targetRec.vpItems)) targetRec.vpItems = [];
+                // Đếm số lần của từng lỗi để hiển thị ngay bên trong khung lỗi tương ứng.
+                var violationCounts = {};
+                targetRec.vpItems.forEach(function (item) {
+                    if (!violationCounts[item.id]) violationCounts[item.id] = 0;
+                    violationCounts[item.id]++;
+                });
             }
             getSortedViolations().forEach(function (v, i) {
-                h += '<div class="v-item' + (ce ? '' : ' no-click') + '"' + (ce ? ' data-act="addViolQuick" data-vid="' + v.id + '"' : '') + '>'
-                    + '<span class="num">' + (i + 1) + '</span><span class="nm">' + esc(v.name) + '</span><span class="pt">−' + v.diem + 'đ</span></div>';
+                var count = ce && violationCounts[v.id] ? violationCounts[v.id] : 0;
+                h += '<div class="v-item' + (ce ? '' : ' no-click') + '" style="display:block"' + (ce ? ' data-act="addViolQuick" data-vid="' + v.id + '" title="Bấm để ghi thêm lỗi này"' : '') + '>'
+                    + '<div style="display:flex;align-items:center;gap:10px">'
+                    + '<span class="num">' + (i + 1) + '</span><span class="nm">' + esc(v.name) + '</span>'
+                    + (count ? '<span class="badge" style="padding:3px 8px;white-space:nowrap">' + count + ' lần</span>' : '')
+                    + '<span class="pt">−' + v.diem + 'đ</span></div>';
+                if (count) {
+                    h += '<div style="margin:9px 0 0 36px;display:flex;align-items:center;gap:8px">'
+                        + '<span style="font-size:12px;color:var(--muted)">Số lần đã ghi: <strong style="color:var(--text)">' + count + '</strong></span>'
+                        + '<button class="btn btn-danger btn-sm" style="padding:4px 8px;flex:none" data-act="removeViolItem" data-vid="' + esc(v.id) + '" title="Thu hồi">'
+                        + '<i data-lucide="undo-2" style="width:12px;height:12px"></i> Thu hồi</button></div>';
+                }
+                h += '</div>';
             });
             body.innerHTML = h;
         }
@@ -1257,16 +1433,44 @@ table.tbl tr:hover td{background:#fcfbf7}
             }
             if (!v)
                 return;
-            var r = getRec(mid), stt = data.violations.indexOf(v) + 1;
-            var line = stt + '. ' + v.name + ' (−' + v.diem + 'đ)';
-            r.loi = (r.loi ? r.loi.replace(/\s+$/, '') + '\n' : '') + line;
-            r.diemTru = (r.diemTru || 0) + v.diem;
-            state.lastUndo = { mid: mid, week: state.week, line: line, diem: v.diem };
+            var r = getRec(mid);
+            if (!Array.isArray(r.vpItems)) r.vpItems = [];
+            if (typeof r.loiManual !== 'string') { r.loiManual = r.loi || ''; r.diemTruThuCong = Number(r.diemTru) || 0; }
+            r.vpItems.push({ id: v.id });
+            r._vpMigrated = true;
+            updateViolationRecord(r);
+            var line = formatViolationItem({ id: v.id });
+            state.lastUndo = { mid: mid, week: state.week, line: line, vid: v.id };
             persist();
             publishSync();
             renderApp();
             renderPanel();
             showToast('Đã ghi: ' + v.name);
+            return;
+        }
+        if (act === 'removeViolItem') {
+            if (!canEdit() || !state.panelTarget) return;
+            var removeRec = getRec(state.panelTarget);
+            if (!Array.isArray(removeRec.vpItems)) removeRec.vpItems = [];
+            var removeVid = el.dataset.vid;
+            var removeIndex = -1;
+            // Mỗi lần bấm thu hồi chỉ xóa một lượt của lỗi được chọn.
+            for (var ri = removeRec.vpItems.length - 1; ri >= 0; ri--) {
+                if (removeRec.vpItems[ri].id === removeVid) { removeIndex = ri; break; }
+            }
+            if (removeIndex < 0) {
+                showToast('Không tìm thấy lỗi cần thu hồi');
+                return;
+            }
+            var removedItem = removeRec.vpItems.splice(removeIndex, 1)[0];
+            var removedViolation = data.violations.find(function (x) { return x.id === removedItem.id; });
+            updateViolationRecord(removeRec);
+            state.lastUndo = null;
+            persist();
+            publishSync();
+            renderApp();
+            renderPanel();
+            showToast(removedViolation ? 'Đã thu hồi: ' + removedViolation.name : 'Đã thu hồi lỗi vi phạm');
             return;
         }
         if (act === 'undoViol') {
@@ -1275,11 +1479,15 @@ table.tbl tr:hover td{background:#fcfbf7}
                 showToast('Không có lỗi nào để thu hồi');
                 return;
             }
-            var ru = getRec(u.mid);
-            var idx = ru.loi.lastIndexOf(u.line);
-            if (idx >= 0) {
-                ru.loi = (ru.loi.slice(0, idx) + ru.loi.slice(idx + u.line.length)).replace(/\n+$/, '').replace(/\n{3,}/g, '\n\n');
-                ru.diemTru = Math.max(0, (ru.diemTru || 0) - u.diem);
+            var ru = getRec(u.mid), idx = -1;
+            if (u.vid && Array.isArray(ru.vpItems)) {
+                for (var ui = ru.vpItems.length - 1; ui >= 0; ui--) {
+                    if (ru.vpItems[ui].id === u.vid) { idx = ui; break; }
+                }
+                if (idx >= 0) { ru.vpItems.splice(idx, 1); updateViolationRecord(ru); }
+            } else {
+                idx = ru.loi.lastIndexOf(u.line);
+                if (idx >= 0) ru.loi = (ru.loi.slice(0, idx) + ru.loi.slice(idx + u.line.length)).replace(/\n+$/, '');
             }
             state.lastUndo = null;
             persist();
@@ -1343,7 +1551,24 @@ table.tbl tr:hover td{background:#fcfbf7}
             return;
         }
         if (act === 'delViol') {
-            data.violations = data.violations.filter(function (v) { return v.id !== el.dataset.vid; });
+            var deletedVid = el.dataset.vid;
+            data.violations = data.violations.filter(function (v) { return v.id !== deletedVid; });
+            Object.keys(data.lops || {}).forEach(function (lk) {
+                Object.keys(data.lops[lk].tos || {}).forEach(function (tk) {
+                    Object.keys(data.lops[lk].tos[tk].months || {}).forEach(function (mk) {
+                        var weeks = data.lops[lk].tos[tk].months[mk].weeks || {};
+                        Object.keys(weeks).forEach(function (wk) {
+                            Object.keys(weeks[wk].recs || {}).forEach(function (mid) {
+                                var r = weeks[wk].recs[mid];
+                                if (Array.isArray(r.vpItems)) {
+                                    r.vpItems = r.vpItems.filter(function (it) { return it.id !== deletedVid; });
+                                    updateViolationRecord(r);
+                                }
+                            });
+                        });
+                    });
+                });
+            });
             persist();
             publishSync();
             renderAdmin();
@@ -1643,8 +1868,9 @@ table.tbl tr:hover td{background:#fcfbf7}
     // ============================================================
     document.addEventListener('change', function (e) {
         var el = e.target;
-        if (el && el.dataset && el.dataset.abind === 'violDiem' && state.adminOpen) {
-            renderAdmin();
+        if (el && el.id === 'panelMemberSelect') {
+            state.panelTarget = el.value || null;
+            renderPanel();
             return;
         }
         if (el.id === 'lopSelect') {
@@ -1708,6 +1934,7 @@ table.tbl tr:hover td{background:#fcfbf7}
     // ============================================================
     document.addEventListener('input', function (e) {
         var el = e.target;
+        // Lấy giá trị ngay từ đầu để cả input data-bind và data-abind đều đọc được.
         var val = el.value;
         if (el.dataset.bind) {
             var mid = el.dataset.mid, bind = el.dataset.bind;
@@ -1737,7 +1964,15 @@ table.tbl tr:hover td{background:#fcfbf7}
                 return;
             }
             if (bind === 'diemTru') {
-                r.diemTru = num(val);
+                if (!Array.isArray(r.vpItems)) r.vpItems = [];
+                if (typeof r.loiManual !== 'string') r.loiManual = r.loi || '';
+                var linked = r.vpItems.reduce(function (sum, item) {
+                    var v = data.violations.find(function (x) { return x.id === item.id; });
+                    return sum + (v ? Number(v.diem) || 0 : 0);
+                }, 0);
+                r.diemTruThuCong = num(val) - linked;
+                r._vpMigrated = true;
+                updateViolationRecord(r);
                 updateComputed(mid);
                 saveDebounce();
                 return;
@@ -1821,8 +2056,10 @@ table.tbl tr:hover td{background:#fcfbf7}
                         break;
                     }
                 }
+                refreshAllViolationRecords();
                 saveDebounce();
                 renderRefs();
+                renderApp();
                 return;
             }
             if (ab === 'violDiem') {
@@ -1832,8 +2069,10 @@ table.tbl tr:hover td{background:#fcfbf7}
                         break;
                     }
                 }
+                refreshAllViolationRecords();
                 saveDebounce();
                 renderRefs();
+                renderApp();
                 return;
             }
             if (ab === 'threshBac') {
@@ -1852,6 +2091,12 @@ table.tbl tr:hover td{background:#fcfbf7}
             }
         }
     });
+    document.addEventListener('change', function (e) {
+        var el = e.target;
+        if (el && el.dataset && el.dataset.abind === 'violDiem' && state.adminOpen) {
+            renderAdmin();
+        }
+    });
     // ============================================================
     // PHẦN 12 - CẬP NHẬT ĐIỂM VÀ XẾP LOẠI TRÊN MÀN HÌNH
     // ============================================================
@@ -1867,6 +2112,14 @@ table.tbl tr:hover td{background:#fcfbf7}
         }
     }
     showLogin();
+    // Nạp bản IndexedDB cũ (nếu mới hơn) sau khi giao diện và trạng thái đã sẵn sàng.
+    restoreLocalDB();
+    window.addEventListener('online', function () {
+        setSyncStatus(true);
+        if (state.dirty) publishSync();
+        else pollSync();
+    });
+    window.addEventListener('offline', function () { setSyncStatus(false); });
 })();
 </script>
 </body>
