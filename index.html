@@ -63,6 +63,11 @@ body{
 .login-form input:focus{border-color:var(--accent)}
 .login-form .row{display:flex;gap:10px}
 .login-form .row input{flex:1}
+.password-field{position:relative;display:flex;align-items:center;width:100%;min-width:0}
+.password-field input{width:100%;min-width:0;padding-right:46px!important}
+.password-toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer}
+.password-toggle:hover{background:var(--accent-soft);color:var(--accent)}
+.password-toggle svg{width:18px;height:18px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:10px;
   border:1.5px solid transparent;font:inherit;font-weight:600;font-size:14px;cursor:pointer;transition:all .15s}
 .btn-primary{background:var(--accent);color:#fff}
@@ -223,7 +228,7 @@ table.tbl tr:hover td{background:#fcfbf7}
 
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:60;display:flex;
   align-items:center;justify-content:center;padding:18px}
-.modal{width:100%;max-width:640px;max-height:88vh;background:var(--card);border-radius:18px;
+.modal{width:100%;max-width:780px;max-height:90vh;background:var(--card);border-radius:18px;
   display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.25)}
 .modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;
   justify-content:space-between}
@@ -232,9 +237,25 @@ table.tbl tr:hover td{background:#fcfbf7}
 .modal-tab{padding:7px 12px;border:none;background:transparent;font:inherit;font-size:12.5px;font-weight:600;
   color:var(--muted);cursor:pointer;border-radius:8px 8px 0 0;border-bottom:2.5px solid transparent;margin-bottom:-1px}
 .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.modal-body{flex:1;overflow-y:auto;padding:18px 20px}
-.sec{margin-bottom:22px}
-.sec h4{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;
+.modal-body{flex:1;overflow-y:auto;padding:20px 22px;background:#fbfcfa}
+.sec{margin-bottom:18px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:0 2px 8px rgba(15,23,42,.025)}
+.sec h4{display:flex;align-items:center;gap:8px;color:var(--text);font-size:13px;letter-spacing:.02em;text-transform:none;margin-bottom:5px}
+.sec .sec-hint{font-size:12px;color:var(--muted);margin-bottom:12px}
+.admin-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eef1ed}
+.admin-row:last-of-type{border-bottom:0}
+.admin-row input{min-width:0;width:100%;padding:9px 11px;border:1px solid #dfe5df;border-radius:9px;font:inherit;font-size:13px;background:#fcfdfb;outline:none}
+.admin-row input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px var(--accent-soft)}
+.admin-row .w-pts{max-width:90px}
+.admin-add{margin-top:13px!important;padding:9px 14px!important}
+#adminTabs{background:#fff;position:sticky;top:0;z-index:2}
+.admin-scope{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px;padding:13px;background:#f1f6f2;border:1px solid #dce8de;border-radius:13px}
+.admin-scope .field{margin:0;min-width:0}
+.admin-scope .field label{font-size:11.5px;font-weight:700;color:#52645a}
+.admin-scope .field select{min-width:0;width:100%;padding:10px 30px 10px 10px;border:1.5px solid #d5e1d7;border-radius:9px;background:#fff;font:inherit;font-size:13px;color:var(--text)}
+.admin-scope .field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+@media(max-width:640px){.admin-scope{grid-template-columns:1fr;gap:8px;padding:10px}.admin-scope .field{display:grid;grid-template-columns:62px minmax(0,1fr);align-items:center;gap:8px}.admin-scope .field label{margin:0}}
+@media(max-width:640px){.modal-overlay{padding:7px}.modal{max-height:96vh;border-radius:14px}.modal-body{padding:12px}.sec{padding:13px}.modal-tabs{padding:8px 10px 0}.modal-tab{font-size:11.5px;padding:7px 9px}.admin-row{gap:7px}}
+.sec:not(.admin-section) h4{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;
   margin-bottom:10px}
 .field{margin-bottom:10px}
 .field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:4px}
@@ -301,16 +322,14 @@ table.tbl tr:hover td{background:#fcfbf7}
       </button>
     </div>
     <div id="adminForm" class="login-form hidden">
-      <input type="password" id="adminPass" placeholder="Mật khẩu quản trị viên" autocomplete="off">
+      <div class="password-field"><input type="password" id="adminPass" placeholder="Mật khẩu quản trị viên" autocomplete="off"><button type="button" class="password-toggle" data-act="togglePassword" data-target="adminPass" aria-label="Hiện mật khẩu" title="Hiện mật khẩu"><i data-lucide="eye"></i></button></div>
       <button class="btn btn-primary" data-act="loginAdmin">Đăng nhập</button>
       <button class="btn btn-ghost" data-act="backRoles">Quay lại</button>
       <div class="err" id="adminErr"></div>
     </div>
     <div id="editorForm" class="login-form hidden">
-      <div class="row">
-        <input type="text" id="editorUser" placeholder="Tên tài khoản" autocomplete="off">
-        <input type="password" id="editorPass" placeholder="Mật khẩu" autocomplete="off">
-      </div>
+      <input type="text" id="editorUser" placeholder="Nhập tên đăng nhập" autocomplete="username">
+      <div class="password-field"><input type="password" id="editorPass" placeholder="Nhập mật khẩu" autocomplete="current-password"><button type="button" class="password-toggle" data-act="togglePassword" data-target="editorPass" aria-label="Hiện mật khẩu" title="Hiện mật khẩu"><i data-lucide="eye"></i></button></div>
       <button class="btn btn-primary" data-act="loginEditor">Đăng nhập</button>
       <button class="btn btn-ghost" data-act="backRoles">Quay lại</button>
       <div class="err" id="editorErr"></div>
@@ -331,8 +350,8 @@ table.tbl tr:hover td{background:#fcfbf7}
     </div>
     <div class="top-controls">
       <select class="select" id="lopSelect" title="Chọn lớp"></select>
-      <select class="select" id="toSelect" title="Chọn tổ"></select>
       <select class="select" id="monthSelect" title="Chọn tháng"></select>
+      <select class="select" id="toSelect" title="Chọn tổ"></select>
       <span class="badge" id="roleBadge"></span>
       <button class="btn btn-ghost btn-sm" data-act="refreshNow" title="Tải dữ liệu mới nhất"><i data-lucide="refresh-cw" style="width:14px;height:14px"></i>Làm mới</button>
       <button class="btn btn-soft btn-sm" data-act="saveNow"><i data-lucide="save" style="width:14px;height:14px"></i>Lưu</button>
@@ -458,6 +477,37 @@ table.tbl tr:hover td{background:#fcfbf7}
     }
     function defaultTo(key) { return { tenTo: key, monthOrder: ['Tháng 10'], months: { 'Tháng 10': { members: defaultMembers(), weeks: emptyWeeks() } } }; }
     function defaultLop(key) { return { tenLop: key, toOrder: ['Tổ 1'], tos: { 'Tổ 1': defaultTo('Tổ 1') } }; }
+    // Tạo lớp mới theo cấu trúc lớp đang chọn: giữ tên tổ, tên tháng và danh sách thành viên,
+    // nhưng tạo dữ liệu tuần trống để các lớp hoạt động độc lập.
+    function cloneLopStructure(sourceLop, newName) {
+        var result = { tenLop: newName, toOrder: [], tos: {} };
+        if (!sourceLop || !sourceLop.toOrder || !sourceLop.toOrder.length) {
+            return defaultLop(newName);
+        }
+        sourceLop.toOrder.forEach(function (toName) {
+            var sourceTo = sourceLop.tos[toName];
+            if (!sourceTo) return;
+            var newTo = { tenTo: toName, monthOrder: [], months: {} };
+            (sourceTo.monthOrder || []).forEach(function (monthName) {
+                var sourceMonth = sourceTo.months[monthName];
+                newTo.monthOrder.push(monthName);
+                newTo.months[monthName] = {
+                    members: sourceMonth && sourceMonth.members
+                        ? sourceMonth.members.map(function (m) { return { id: uid(), name: m.name }; })
+                        : defaultMembers(),
+                    weeks: emptyWeeks()
+                };
+            });
+            if (!newTo.monthOrder.length) {
+                var fallback = defaultTo(toName);
+                newTo = fallback;
+            }
+            result.toOrder.push(toName);
+            result.tos[toName] = newTo;
+        });
+        return result.toOrder.length ? result : defaultLop(newName);
+    }
+
     // SỬA DỮ LIỆU MẪU: danh sách thành viên, vi phạm và ngưỡng xếp loại ở đây.
     function defaultData() {
         return {
@@ -902,6 +952,38 @@ table.tbl tr:hover td{background:#fcfbf7}
         toastTimer = setTimeout(function () { t.classList.remove('show'); }, 1800);
     }
     /* ---------- helpers ---------- */
+    // Danh sách tháng chung của lớp: tổng hợp tháng đang có ở mọi tổ.
+    function getClassMonthOrder(lop) {
+        var seen = {};
+        var months = [];
+        if (!lop) return months;
+        (lop.toOrder || []).forEach(function (toName) {
+            var to = lop.tos[toName];
+            (to ? to.monthOrder : []).forEach(function (monthName) {
+                if (!seen[monthName]) {
+                    seen[monthName] = true;
+                    months.push(monthName);
+                }
+            });
+        });
+        return months;
+    }
+    // Khi chuyển sang tổ chưa có tháng đang xem, tạo nhánh tháng rỗng cho tổ đó.
+    function ensureMonthForTo(to, monthName) {
+        if (!to || !monthName) return;
+        if (!to.months[monthName]) {
+            var sourceName = to.monthOrder && to.monthOrder[0];
+            var sourceMonth = sourceName && to.months[sourceName];
+            to.months[monthName] = {
+                members: sourceMonth ? sourceMonth.members.map(function (m) {
+                    return { id: m.id, name: m.name };
+                }) : defaultMembers(),
+                weeks: emptyWeeks()
+            };
+            if (!to.monthOrder) to.monthOrder = [];
+            to.monthOrder.push(monthName);
+        }
+    }
     function curLop() { return data.lops[state.lop]; }
     function curTo() { var l = curLop(); return l ? l.tos[state.to] : null; }
     function curMonth() { var t = curTo(); return t ? t.months[state.month] : null; }
@@ -1012,7 +1094,7 @@ table.tbl tr:hover td{background:#fcfbf7}
         }
         fillSelect('lopSelect', data.lopOrder, state.lop);
         fillSelect('toSelect', l ? l.toOrder : [], state.to);
-        fillSelect('monthSelect', t ? t.monthOrder : [], state.month);
+        fillSelect('monthSelect', getClassMonthOrder(l), state.month);
         var rb = document.getElementById('roleBadge');
         var label = { admin: 'Quản trị viên', editor: 'Biên tập: ' + state.editorName, viewer: 'Người xem' }[state.role] || '';
         rb.className = 'badge ' + (state.role === 'viewer' ? 'viewer' : state.role === 'editor' ? 'editor' : '');
@@ -1218,12 +1300,32 @@ table.tbl tr:hover td{background:#fcfbf7}
         icons();
     }
     var ADMIN_TABS = [
-        { id: 'lop', label: 'Lớp / Tổ / Tháng' },
+        { id: 'lop', label: 'Lớp / Tháng / Tổ' },
         { id: 'tv', label: 'Thành viên' },
         { id: 'vp', label: 'Hành vi vi phạm' },
         { id: 'xl', label: 'Ngưỡng xếp loại' },
         { id: 'bm', label: 'Bảo mật & TK' }
     ];
+    // Bộ chọn phạm vi dùng chung trong cả phần quản lý cấu trúc và thành viên.
+    // Thứ tự thao tác thống nhất: Lớp -> Tháng -> Tổ.
+    function renderAdminScopeSelectors() {
+        var l = curLop(), t = curTo();
+        var monthNames = getClassMonthOrder(l);
+        var classOptions = data.lopOrder.map(function (name) {
+            return '<option value="' + esc(name) + '"' + (name === state.lop ? ' selected' : '') + '>' + esc(name) + '</option>';
+        }).join('');
+        var monthOptions = monthNames.map(function (name) {
+            return '<option value="' + esc(name) + '"' + (name === state.month ? ' selected' : '') + '>' + esc(name) + '</option>';
+        }).join('');
+        var teamOptions = (l ? l.toOrder : []).map(function (name) {
+            return '<option value="' + esc(name) + '"' + (name === state.to ? ' selected' : '') + '>' + esc(name) + '</option>';
+        }).join('');
+        return '<div class="admin-scope">'
+            + '<div class="field"><label>Lớp</label><select data-admin-scope="lop">' + classOptions + '</select></div>'
+            + '<div class="field"><label>Tháng</label><select data-admin-scope="month">' + monthOptions + '</select></div>'
+            + '<div class="field"><label>Tổ</label><select data-admin-scope="to">' + teamOptions + '</select></div>'
+            + '</div>';
+    }
     function renderAdmin() {
         document.getElementById('adminModal').classList.toggle('hidden', !state.adminOpen);
         if (!state.adminOpen)
@@ -1231,56 +1333,56 @@ table.tbl tr:hover td{background:#fcfbf7}
         document.getElementById('adminTabs').innerHTML = ADMIN_TABS.map(function (t) {
             return '<button class="modal-tab' + (state.adminTab === t.id ? ' active' : '') + '" data-act="adminTab" data-tab="' + t.id + '">' + t.label + '</button>';
         }).join('');
-        var b = document.getElementById('adminBody'), h = '', l = curLop(), t = curTo();
+        var b = document.getElementById('adminBody'), h = (state.adminTab === 'lop' || state.adminTab === 'tv') ? renderAdminScopeSelectors() : '', l = curLop(), t = curTo();
         if (state.adminTab === 'lop') {
-            h += '<div class="sec"><h4>Các lớp (' + data.lopOrder.length + ')</h4>';
+            h += '<div class="sec"><h4>🏫 Danh sách lớp (' + data.lopOrder.length + ')</h4><div class="sec-hint">Đổi tên lớp trực tiếp hoặc thêm lớp mới theo cấu trúc lớp đang chọn.</div>';
             data.lopOrder.forEach(function (k) {
-                h += '<div class="list-row"><input data-abind="lopName" data-lop="' + esc(k) + '" value="' + esc(k) + '">'
+                h += '<div class="admin-row"><input data-abind="lopName" data-lop="' + esc(k) + '" value="' + esc(k) + '">'
                     + '<button class="icon-btn del" data-act="delLop" data-lop="' + esc(k) + '" title="Xóa lớp"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></div>';
             });
-            h += '<button class="btn btn-soft btn-sm" style="margin-top:10px" data-act="addLop"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm lớp</button></div>';
-            h += '<div class="sec"><h4>Các tổ của lớp: ' + esc(state.lop) + '</h4>';
-            (l ? l.toOrder : []).forEach(function (k) {
-                h += '<div class="list-row"><input data-abind="toName" data-to="' + esc(k) + '" value="' + esc(k) + '">'
-                    + '<button class="icon-btn del" data-act="delTo" data-to="' + esc(k) + '" title="Xóa tổ"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></div>';
-            });
-            h += '<button class="btn btn-soft btn-sm" style="margin-top:10px" data-act="addTo"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm tổ</button></div>';
-            h += '<div class="sec"><h4>Các tháng của tổ: ' + esc(state.to) + '</h4>';
-            (t ? t.monthOrder : []).forEach(function (mn) {
-                h += '<div class="list-row"><input data-abind="monthName" data-month="' + esc(mn) + '" value="' + esc(mn) + '">'
+            h += '<button class="btn btn-soft btn-sm admin-add" data-act="addLop"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm lớp</button></div>';
+            h += '<div class="sec"><h4>📅 Các tháng của lớp ' + esc(state.lop) + '</h4><div class="sec-hint">Tháng được quản lý chung trong lớp; khi đổi tháng, các tổ sẽ tự có nhánh dữ liệu riêng.</div>';
+            getClassMonthOrder(l).forEach(function (mn) {
+                h += '<div class="admin-row"><input data-abind="monthName" data-month="' + esc(mn) + '" value="' + esc(mn) + '">'
                     + '<button class="icon-btn del" data-act="delMonth" data-month="' + esc(mn) + '" title="Xóa tháng"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></div>';
             });
-            h += '<button class="btn btn-soft btn-sm" style="margin-top:10px" data-act="addMonth"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm tháng</button></div>';
+            h += '<button class="btn btn-soft btn-sm admin-add" data-act="addMonth"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm tháng</button></div>';
+            h += '<div class="sec"><h4>👥 Các tổ trong ' + esc(state.lop) + '</h4><div class="sec-hint">Chọn lớp ở bộ lọc phía trên để quản lý danh sách tổ thuộc lớp đó.</div>';
+            (l ? l.toOrder : []).forEach(function (k) {
+                h += '<div class="admin-row"><input data-abind="toName" data-to="' + esc(k) + '" value="' + esc(k) + '">'
+                    + '<button class="icon-btn del" data-act="delTo" data-to="' + esc(k) + '" title="Xóa tổ"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></div>';
+            });
+            h += '<button class="btn btn-soft btn-sm admin-add" data-act="addTo"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm tổ</button></div>';
         }
         else if (state.adminTab === 'tv') {
             var mm = curMonth();
-            h += '<div class="sec"><h4>Thành viên ' + esc(state.to) + ' (' + (mm ? mm.members.length : 0) + ')</h4>';
+            h += '<div class="sec"><h4>🧑‍🎓 Thành viên — ' + esc(state.lop) + ' / ' + esc(state.month) + ' / ' + esc(state.to) + ' (' + (mm ? mm.members.length : 0) + ')</h4><div class="sec-hint">Dùng ba bộ chọn Lớp → Tháng → Tổ phía trên để chuyển nhanh danh sách cần chỉnh sửa. Thay đổi chỉ áp dụng cho đúng lớp, tháng và tổ đang chọn.</div>';
             (mm ? mm.members : []).forEach(function (mb) {
-                h += '<div class="list-row"><input data-abind="memberName" data-mid="' + mb.id + '" value="' + esc(mb.name) + '">'
+                h += '<div class="admin-row"><input data-abind="memberName" data-mid="' + mb.id + '" value="' + esc(mb.name) + '">'
                     + '<button class="icon-btn del" data-act="delMember" data-mid="' + mb.id + '" title="Xóa"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></div>';
             });
-            h += '<button class="btn btn-soft btn-sm" style="margin-top:10px" data-act="addMember"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm thành viên</button></div>';
+            h += '<button class="btn btn-soft btn-sm admin-add" data-act="addMember"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm thành viên</button></div>';
         }
         else if (state.adminTab === 'vp') {
-            h += '<div class="sec"><h4>Danh mục hành vi vi phạm (' + data.violations.length + ')</h4>';
+            h += '<div class="sec"><h4>⚠️ Danh mục hành vi vi phạm (' + data.violations.length + ')</h4><div class="sec-hint">Sửa tên hành vi và số điểm trừ tương ứng.</div>';
             getSortedViolations().forEach(function (v) {
-                h += '<div class="list-row"><input data-abind="violName" data-vid="' + v.id + '" value="' + esc(v.name) + '">'
+                h += '<div class="admin-row"><input data-abind="violName" data-vid="' + v.id + '" value="' + esc(v.name) + '">'
                     + '<input class="w-pts" type="number" data-abind="violDiem" data-vid="' + v.id + '" value="' + v.diem + '">'
                     + '<button class="icon-btn del" data-act="delViol" data-vid="' + v.id + '" title="Xóa"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></div>';
             });
-            h += '<button class="btn btn-soft btn-sm" style="margin-top:10px" data-act="addViol"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm hành vi</button></div>';
+            h += '<button class="btn btn-soft btn-sm admin-add" data-act="addViol"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm hành vi</button></div>';
         }
         else if (state.adminTab === 'xl') {
-            h += '<div class="sec"><h4>Ngưỡng xếp loại (điểm tối thiểu)</h4>';
+            h += '<div class="sec"><h4>📊 Ngưỡng xếp loại</h4><div class="sec-hint">Nhập tên bậc và điểm tối thiểu để áp dụng khi xếp loại.</div>';
             data.thresholds.forEach(function (tt, i) {
-                h += '<div class="list-row"><input data-abind="threshBac" data-idx="' + i + '" value="' + esc(tt.bac) + '">'
+                h += '<div class="admin-row"><input data-abind="threshBac" data-idx="' + i + '" value="' + esc(tt.bac) + '">'
                     + '<input class="w-pts" type="number" data-abind="threshMin" data-idx="' + i + '" value="' + tt.min + '">'
                     + '<button class="icon-btn del" data-act="delThresh" data-idx="' + i + '" title="Xóa"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></div>';
             });
-            h += '<button class="btn btn-soft btn-sm" style="margin-top:10px" data-act="addThresh"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm bậc</button></div>';
+            h += '<button class="btn btn-soft btn-sm admin-add" data-act="addThresh"><i data-lucide="plus" style="width:14px;height:14px"></i>Thêm bậc</button></div>';
         }
         else if (state.adminTab === 'bm') {
-            h += '<div class="sec"><h4>Quyền chỉnh sửa</h4>'
+            h += '<div class="sec"><h4>🔐 Quyền chỉnh sửa</h4>'
                 + '<label class="toggle"><input type="checkbox" data-abind="allowPublicEdit" ' + (data.allowPublicEdit ? 'checked' : '') + '>'
                 + '<span><span class="tl">Cho phép người xem chỉnh sửa</span><br><span class="td">Bật để bất kỳ ai cũng có thể điền/sửa bảng điểm</span></span></label></div>';
             h += '<div class="sec"><h4>Đổi mật khẩu quản trị viên</h4>'
@@ -1288,11 +1390,13 @@ table.tbl tr:hover td{background:#fcfbf7}
                 + '<button class="btn btn-soft btn-sm" data-act="changeAdminPass">Cập nhật mật khẩu</button></div>';
             h += '<div class="sec"><h4>Tài khoản biên tập viên (' + data.editors.length + ')</h4>';
             data.editors.forEach(function (e, i) {
-                h += '<div class="list-row"><input value="' + esc(e.user) + '" readonly style="background:#f6f5ef">'
-                    + '<span style="font-size:12px;color:var(--muted);flex:none">biên tập</span>'
+                var passId = 'editorSavedPass' + i;
+                h += '<div class="admin-row" style="align-items:center;flex-wrap:wrap"><input value="' + esc(e.user) + '" readonly style="background:#f6f5ef;flex:1;min-width:120px">'
+                    + '<div class="password-field" style="flex:1;min-width:150px"><input id="' + passId + '" type="password" value="' + esc(e.pass) + '" readonly aria-label="Mật khẩu tài khoản ' + esc(e.user) + '"><button type="button" class="password-toggle" data-act="togglePassword" data-target="' + passId + '" aria-label="Hiện mật khẩu" title="Hiện mật khẩu"><i data-lucide="eye"></i></button></div>'
                     + '<button class="icon-btn del" data-act="delEditor" data-idx="' + i + '" title="Xóa"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></div>';
             });
-            h += '<div class="field" style="margin-top:10px"><div class="row"><input type="text" id="newEditorUser" placeholder="Tên tài khoản"><input type="password" id="newEditorPass" placeholder="Mật khẩu"></div></div>'
+            h += '<div class="field" style="margin-top:10px"><input type="text" id="newEditorUser" placeholder="Nhập tài khoản" autocomplete="off"></div>'
+                + '<div class="field"><div class="password-field"><input type="password" id="newEditorPass" placeholder="Nhập mật khẩu" autocomplete="new-password"><button type="button" class="password-toggle" data-act="togglePassword" data-target="newEditorPass" aria-label="Hiện mật khẩu" title="Hiện mật khẩu"><i data-lucide="eye"></i></button></div></div>'
                 + '<button class="btn btn-soft btn-sm" data-act="addEditor"><i data-lucide="user-plus" style="width:14px;height:14px"></i>Tạo tài khoản biên tập</button></div>';
         }
         b.innerHTML = h;
@@ -1308,6 +1412,18 @@ table.tbl tr:hover td{background:#fcfbf7}
         if (!el)
             return;
         var act = el.dataset.act;
+        if (act === 'togglePassword') {
+            var target = document.getElementById(el.dataset.target);
+            if (target) {
+                var showing = target.type === 'password';
+                target.type = showing ? 'text' : 'password';
+                el.innerHTML = '<i data-lucide="' + (showing ? 'eye-off' : 'eye') + '"></i>';
+                el.setAttribute('aria-label', showing ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+                el.title = showing ? 'Ẩn mật khẩu' : 'Hiện mật khẩu';
+                icons();
+            }
+            return;
+        }
         if (act === 'toggleLoi') {
             if (!el.classList.contains('short'))
                 el.classList.toggle('open');
@@ -1600,11 +1716,16 @@ table.tbl tr:hover td{background:#fcfbf7}
                     showToast('Lớp này đã tồn tại');
                     return;
                 }
-                data.lops[ln] = defaultLop(ln);
+                // Lớp hiện tại là lớp mẫu chính khi tạo lớp mới.
+                var templateLop = curLop();
+                data.lops[ln] = cloneLopStructure(templateLop, ln);
                 data.lopOrder.push(ln);
                 state.lop = ln;
                 state.to = data.lops[ln].toOrder[0];
-                state.month = data.lops[ln].tos[state.to].monthOrder[0];
+                var newClassMonths = getClassMonthOrder(data.lops[ln]);
+                state.month = newClassMonths.indexOf(state.month) >= 0
+                    ? state.month
+                    : data.lops[ln].tos[state.to].monthOrder[0];
                 state.week = 'Tuần 1';
                 persist();
                 publishSync();
@@ -1648,11 +1769,22 @@ table.tbl tr:hover td{background:#fcfbf7}
                     return;
                 }
                 var src = curTo();
-                var srcMems = (src && src.months[src.monthOrder[0]]) ? src.months[src.monthOrder[0]].members.map(function (x) { return { id: x.id, name: x.name }; }) : [];
-                l.tos[tn2] = { tenTo: tn2, monthOrder: ['Tháng 1'], months: { 'Tháng 1': { members: srcMems, weeks: emptyWeeks() } } };
+                var newTeam = { tenTo: tn2, monthOrder: [], months: {} };
+                // Tổ mới kế thừa toàn bộ danh sách tháng của lớp; dữ liệu tuần bắt đầu trống.
+                getClassMonthOrder(l).forEach(function (monthName) {
+                    var sourceMonth = src && (src.months[monthName] || src.months[src.monthOrder[0]]);
+                    var newMembers = sourceMonth ? sourceMonth.members.map(function (x) { return { id: uid(), name: x.name }; }) : defaultMembers();
+                    newTeam.monthOrder.push(monthName);
+                    newTeam.months[monthName] = { members: newMembers, weeks: emptyWeeks() };
+                });
+                if (!newTeam.monthOrder.length) {
+                    newTeam.monthOrder = ['Tháng 1'];
+                    newTeam.months['Tháng 1'] = { members: defaultMembers(), weeks: emptyWeeks() };
+                }
+                l.tos[tn2] = newTeam;
                 l.toOrder.push(tn2);
                 state.to = tn2;
-                state.month = 'Tháng 1';
+                state.month = newTeam.monthOrder.indexOf(state.month) >= 0 ? state.month : newTeam.monthOrder[0];
                 state.week = 'Tuần 1';
                 persist();
                 publishSync();
@@ -1689,14 +1821,18 @@ table.tbl tr:hover td{background:#fcfbf7}
             var mn2 = prompt('Tên tháng mới (ví dụ: Tháng 11):', '');
             if (mn2 && mn2.trim()) {
                 mn2 = mn2.trim();
-                var ct = curTo();
-                if (ct.months[mn2]) {
-                    showToast('Tháng này đã tồn tại');
+                if (getClassMonthOrder(curLop()).indexOf(mn2) >= 0) {
+                    showToast('Tháng này đã tồn tại trong lớp');
                     return;
                 }
-                var srcm = ct.months[state.month];
-                ct.months[mn2] = { members: (srcm ? srcm.members.map(function (x) { return { id: x.id, name: x.name }; }) : []), weeks: emptyWeeks() };
-                ct.monthOrder.push(mn2);
+                // Tháng là nhánh chung của lớp; tạo tháng rỗng cho tất cả các tổ.
+                var classForMonth = curLop();
+                classForMonth.toOrder.forEach(function (toName) {
+                    var team = classForMonth.tos[toName];
+                    var srcm = team.months[state.month] || team.months[team.monthOrder[0]];
+                    team.months[mn2] = { members: (srcm ? srcm.members.map(function (x) { return { id: x.id, name: x.name }; }) : []), weeks: emptyWeeks() };
+                    if (team.monthOrder.indexOf(mn2) < 0) team.monthOrder.push(mn2);
+                });
                 state.month = mn2;
                 persist();
                 publishSync();
@@ -1708,16 +1844,21 @@ table.tbl tr:hover td{background:#fcfbf7}
             return;
         }
         if (act === 'delMonth') {
-            var md = el.dataset.month, ct2 = curTo();
-            if (ct2.monthOrder.length <= 1) {
+            var md = el.dataset.month, classForDelete = curLop();
+            var classMonthsBeforeDelete = getClassMonthOrder(classForDelete);
+            if (classMonthsBeforeDelete.length <= 1) {
                 showToast('Phải giữ lại ít nhất 1 tháng');
                 return;
             }
-            if (confirm('Xóa tháng ' + md + ' và toàn bộ dữ liệu của tháng này?')) {
-                ct2.monthOrder = ct2.monthOrder.filter(function (x) { return x !== md; });
-                delete ct2.months[md];
+            if (confirm('Xóa tháng ' + md + ' và toàn bộ dữ liệu tháng này trong tất cả các tổ của lớp ' + state.lop + '?')) {
+                classForDelete.toOrder.forEach(function (toName) {
+                    var team = classForDelete.tos[toName];
+                    team.monthOrder = team.monthOrder.filter(function (x) { return x !== md; });
+                    delete team.months[md];
+                });
                 if (state.month === md)
-                    state.month = ct2.monthOrder[0];
+                    state.month = getClassMonthOrder(classForDelete)[0];
+                ensureMonthForTo(curTo(), state.month);
                 persist();
                 publishSync();
                 renderApp();
@@ -1868,16 +2009,46 @@ table.tbl tr:hover td{background:#fcfbf7}
     // ============================================================
     document.addEventListener('change', function (e) {
         var el = e.target;
+        if (el && el.dataset && el.dataset.adminScope) {
+            var scope = el.dataset.adminScope;
+            if (scope === 'lop') {
+                var keepMonth = state.month;
+                var keepTo = state.to;
+                state.lop = el.value;
+                var nextLop = curLop();
+                state.to = nextLop.toOrder.indexOf(keepTo) >= 0 ? keepTo : nextLop.toOrder[0];
+                var nextMonths = getClassMonthOrder(nextLop);
+                state.month = nextMonths.indexOf(keepMonth) >= 0 ? keepMonth : nextMonths[0];
+                ensureMonthForTo(curTo(), state.month);
+            }
+            else if (scope === 'month') {
+                state.month = el.value;
+                ensureMonthForTo(curTo(), state.month);
+            }
+            else if (scope === 'to') {
+                state.to = el.value;
+                ensureMonthForTo(curTo(), state.month);
+            }
+            state.week = 'Tuần 1';
+            persist();
+            publishSync();
+            renderApp();
+            renderAdmin();
+            return;
+        }
         if (el && el.id === 'panelMemberSelect') {
             state.panelTarget = el.value || null;
             renderPanel();
             return;
         }
         if (el.id === 'lopSelect') {
+            var previousMonth = state.month;
             state.lop = el.value;
             var l = curLop();
             state.to = l.toOrder[0];
-            state.month = l.tos[state.to].monthOrder[0];
+            var classMonths = getClassMonthOrder(l);
+            state.month = classMonths.indexOf(previousMonth) >= 0 ? previousMonth : classMonths[0];
+            ensureMonthForTo(l.tos[state.to], state.month);
             state.week = 'Tuần 1';
             renderApp();
             return;
@@ -1885,13 +2056,14 @@ table.tbl tr:hover td{background:#fcfbf7}
         if (el.id === 'toSelect') {
             state.to = el.value;
             var t = curTo();
-            state.month = t.monthOrder[0];
+            ensureMonthForTo(t, state.month);
             state.week = 'Tuần 1';
             renderApp();
             return;
         }
         if (el.id === 'monthSelect') {
             state.month = el.value;
+            ensureMonthForTo(curTo(), state.month);
             state.week = 'Tuần 1';
             renderApp();
             return;
@@ -2023,18 +2195,23 @@ table.tbl tr:hover td{background:#fcfbf7}
                 return;
             }
             if (ab === 'monthName') {
-                var old = el.dataset.month, nw = val.trim(), ct = curTo();
-                if (nw && !ct.months[nw] && nw !== old) {
-                    ct.months[nw] = ct.months[old];
-                    delete ct.months[old];
-                    var oi3 = ct.monthOrder.indexOf(old);
-                    if (oi3 >= 0)
-                        ct.monthOrder[oi3] = nw;
-                    if (state.month === old)
-                        state.month = nw;
+                var old = el.dataset.month, nw = val.trim(), classForRename = curLop();
+                var monthExists = getClassMonthOrder(classForRename).indexOf(nw) >= 0;
+                if (nw && !monthExists && nw !== old) {
+                    classForRename.toOrder.forEach(function (toName) {
+                        var team = classForRename.tos[toName];
+                        if (team.months[old]) {
+                            team.months[nw] = team.months[old];
+                            delete team.months[old];
+                            var monthIndex = team.monthOrder.indexOf(old);
+                            if (monthIndex >= 0) team.monthOrder[monthIndex] = nw;
+                        }
+                    });
+                    if (state.month === old) state.month = nw;
                     el.dataset.month = nw;
                     persist();
                     publishSync();
+                    renderAdmin();
                 }
                 return;
             }
