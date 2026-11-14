@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="utf-8">
@@ -8,291 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/lucide@1/dist/umd/lucide.min.js"></script>
 <!-- THƯ VIỆN NGOÀI: LZString dùng để nén dữ liệu đồng bộ -->
 <script>var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",e={};function t(r,o){if(!e[r]){e[r]={};for(var n=0;n<r.length;n++)e[r][r.charAt(n)]=n}return e[r][o]}var i={compressToBase64:function(r){if(null==r)return"";var n=i._compress(r,6,function(r){return o.charAt(r)});switch(n.length%4){default:case 0:return n;case 1:return n+"===";case 2:return n+"==";case 3:return n+"="}},decompressFromBase64:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(n){return t(o,r.charAt(n))})},compressToUTF16:function(o){return null==o?"":i._compress(o,15,function(o){return r(o+32)})+" "},decompressFromUTF16:function(r){return null==r?"":""==r?null:i._decompress(r.length,16384,function(o){return r.charCodeAt(o)-32})},compressToUint8Array:function(r){for(var o=i.compress(r),n=new Uint8Array(2*o.length),e=0,t=o.length;e<t;e++){var s=o.charCodeAt(e);n[2*e]=s>>>8,n[2*e+1]=s%256}return n},decompressFromUint8Array:function(o){if(null==o)return i.decompress(o);for(var n=new Array(o.length/2),e=0,t=n.length;e<t;e++)n[e]=256*o[2*e]+o[2*e+1];var s=[];return n.forEach(function(o){s.push(r(o))}),i.decompress(s.join(""))},compressToEncodedURIComponent:function(r){return null==r?"":i._compress(r,6,function(r){return n.charAt(r)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:(r=r.replace(/ /g,"+"),i._decompress(r.length,32,function(o){return t(n,r.charAt(o))}))},compress:function(o){return i._compress(o,16,function(o){return r(o)})},_compress:function(r,o,n){if(null==r)return"";var e,t,i,s={},u={},a="",p="",c="",l=2,f=3,h=2,d=[],m=0,v=0;for(i=0;i<r.length;i+=1)if(a=r.charAt(i),Object.prototype.hasOwnProperty.call(s,a)||(s[a]=f++,u[a]=!0),p=c+a,Object.prototype.hasOwnProperty.call(s,p))c=p;else{if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++),s[p]=f++,c=String(a)}if(""!==c){if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++)}for(t=2,e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;for(;;){if(m<<=1,v==o-1){d.push(n(m));break}v++}return d.join("")},decompress:function(r){return null==r?"":""==r?null:i._decompress(r.length,32768,function(o){return r.charCodeAt(o)})},_decompress:function(o,n,e){var t,i,s,u,a,p,c,l=[],f=4,h=4,d=3,m="",v=[],g={val:e(0),position:n,index:1};for(t=0;t<3;t+=1)l[t]=t;for(s=0,a=Math.pow(2,2),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 2:return""}for(l[3]=c,i=c,v.push(c);;){if(g.index>o)return"";for(s=0,a=Math.pow(2,d),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(c=s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 2:return v.join("")}if(0==f&&(f=Math.pow(2,d),d++),l[c])m=l[c];else{if(c!==h)return null;m=i+i.charAt(0)}v.push(m),l[h++]=i+m.charAt(0),i=m,0==--f&&(f=Math.pow(2,d),d++)}}};return i}();"function"==typeof define&&define.amd?define(function(){return LZString}):"undefined"!=typeof module&&null!=module?module.exports=LZString:"undefined"!=typeof angular&&null!=angular&&angular.module("LZString",[]).factory("LZString",function(){return LZString});</script>
-<style>
-/* ============================================================
-   PHẦN 02 - CSS / GIAO DIỆN
-   02.1: Biến màu và thiết lập chung
-   02.2: Đăng nhập
-   02.3: Màn hình chính, bảng điểm và nút thao tác
-   02.4: Bảng điều khiển, modal và thông báo
-   02.5: Responsive cho điện thoại
-   ============================================================ */
-/* 02.1 - BIẾN MÀU VÀ THIẾT LẬP CHUNG */
-:root{
-  --bg:#faf9f4; --card:#ffffff; --text:#0f172a; --muted:#64748b;
-  --accent:#297a2e; --accent-soft:rgba(41,122,46,.14);
-  --accent2:#d97706; --accent2-soft:rgba(217,119,6,.14);
-  --border:rgba(15,23,42,.08);
-  --good:#297a2e; --good-soft:rgba(41,122,46,.12);
-  --kha:#0d9488; --kha-soft:rgba(13,148,136,.12);
-  --tb:#d97706; --tb-soft:rgba(217,119,6,.14);
-  --yeu:#dc2626; --yeu-soft:rgba(220,38,38,.12);
-  --radius:14px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{
-  font-family:'Public Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-  background:var(--bg); color:var(--text); font-size:15px; line-height:1.5;
-  -webkit-font-smoothing:antialiased;
-}
-.font-display{font-family:'Baloo 2',cursive}
-.hidden{display:none!important}
-
-/* 02.2 - GIAO DIỆN ĐĂNG NHẬP */
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
-  background:radial-gradient(1200px 600px at 80% -10%,var(--accent-soft),transparent 60%),
-             radial-gradient(900px 500px at 0% 110%,var(--accent2-soft),transparent 55%),var(--bg);}
-.login-card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--border);
-  border-radius:20px;padding:32px 28px;box-shadow:0 10px 40px rgba(15,23,42,.08)}
-.login-card h1{font-family:'Baloo 2',cursive;font-size:24px;font-weight:700;text-align:center;line-height:1.25}
-.login-card .sub{text-align:center;color:var(--muted);font-size:13.5px;margin:8px 0 24px}
-.role-grid{display:grid;grid-template-columns:1fr;gap:10px}
-.role-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--border);
-  background:var(--card);border-radius:12px;cursor:pointer;text-align:left;font:inherit;color:var(--text);
-  transition:border-color .15s,background .15s,transform .1s}
-.role-btn:hover{border-color:var(--accent);background:var(--accent-soft)}
-.role-btn:active{transform:scale(.98)}
-.role-btn .ic{width:38px;height:38px;border-radius:10px;background:var(--accent-soft);color:var(--accent);
-  display:flex;align-items:center;justify-content:center;flex:none}
-.role-btn .t{font-weight:600;font-size:15px}
-.role-btn .d{font-size:12px;color:var(--muted)}
-.login-form{margin-top:16px;display:flex;flex-direction:column;gap:10px}
-.login-form input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;
-  font:inherit;font-size:14px;background:#fff;outline:none;transition:border-color .15s}
-.login-form input:focus{border-color:var(--accent)}
-.login-form .row{display:flex;gap:10px}
-.login-form .row input{flex:1}
-.password-field{position:relative;display:flex;align-items:center;width:100%;min-width:0}
-.password-field input{width:100%;min-width:0;padding-right:46px!important}
-.password-toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer}
-.password-toggle:hover{background:var(--accent-soft);color:var(--accent)}
-.password-toggle svg{width:18px;height:18px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:10px;
-  border:1.5px solid transparent;font:inherit;font-weight:600;font-size:14px;cursor:pointer;transition:all .15s}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover{filter:brightness(1.08)}
-.btn-soft{background:var(--accent-soft);color:var(--text);border-color:var(--accent)}
-.btn-ghost{background:transparent;color:var(--muted);border-color:var(--border)}
-.btn-ghost:hover{color:var(--text);border-color:var(--muted)}
-.btn-danger{background:var(--yeu-soft);color:var(--yeu);border-color:var(--yeu)}
-.btn-sm{padding:6px 12px;font-size:12.5px;border-radius:8px}
-.err{color:var(--yeu);font-size:12.5px;min-height:16px;text-align:center}
-.login-foot{margin-top:18px;text-align:center;font-size:12px;color:var(--muted)}
-
-/* 02.3 - GIAO DIỆN CHÍNH, BẢNG ĐIỂM VÀ CÁC NÚT */
-.app{max-width:1180px;margin:0 auto;padding:18px 18px 120px}
-.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:200px}
-.brand .logo{width:40px;height:40px;border-radius:12px;background:var(--accent);color:#fff;
-  display:flex;align-items:center;justify-content:center;flex:none}
-.brand h1{font-family:'Baloo 2',cursive;font-size:19px;font-weight:700;line-height:1.2}
-.brand .sub-name{font-size:12.5px;color:var(--muted);font-weight:500}
-.brand .sub-name input{font:inherit;font-size:12.5px;color:var(--muted);border:none;background:transparent;
-  border-bottom:1px dashed var(--border);outline:none;width:130px}
-.brand .sub-name input:focus{border-bottom-color:var(--accent);color:var(--text)}
-.top-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.select{padding:8px 12px;border:1.5px solid var(--border);border-radius:10px;font:inherit;font-size:13.5px;
-  background:#fff;color:var(--text);outline:none;cursor:pointer;max-width:150px}
-.select:focus{border-color:var(--accent)}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:12px;
-  font-weight:600;background:var(--accent-soft);color:var(--accent)}
-.badge.viewer{background:var(--kha-soft);color:var(--kha)}
-.badge.editor{background:var(--accent2-soft);color:var(--accent2)}
-.sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--good);
-  box-shadow:0 0 0 3px var(--good-soft);animation:pulse 2s infinite}
-.sync-dot.err{background:var(--yeu);box-shadow:0 0 0 3px var(--yeu-soft);animation:none}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;border-bottom:2px solid var(--border);padding-bottom:0}
-.tab{padding:9px 16px;border:none;background:transparent;font:inherit;font-weight:600;font-size:13.5px;
-  color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-2px;border-radius:8px 8px 0 0;
-  transition:all .15s}
-.tab:hover{color:var(--text);background:rgba(15,23,42,.03)}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.tab.summary{color:var(--accent2)}
-.tab.summary.active{color:var(--accent2);border-bottom-color:var(--accent2)}
-
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-  box-shadow:0 1px 3px rgba(15,23,42,.05);overflow:hidden}
-.card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;
-  justify-content:space-between;gap:10px;flex-wrap:wrap}
-.card-head h2{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700}
-.card-head .hint{font-size:12px;color:var(--muted)}
-.card-body{padding:0}
-.table-wrap{overflow-x:auto}
-table.tbl{width:100%;border-collapse:collapse;min-width:760px}
-table.tbl th{background:#f6f5ef;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;
-  letter-spacing:.04em;padding:10px 12px;text-align:left;border-bottom:1.5px solid var(--border);white-space:nowrap}
-table.tbl td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13.5px}
-table.tbl tr:last-child td{border-bottom:none}
-table.tbl tr:hover td{background:#fcfbf7}
-.cell{width:100%;padding:7px 9px;border:1.5px solid transparent;border-radius:8px;font:inherit;font-size:13.5px;
-  background:transparent;outline:none;transition:border-color .15s,background .15s;resize:vertical;color:var(--text)}
-.cell:hover{border-color:var(--border)}
-.cell:focus{border-color:var(--accent);background:#fff}
-.in-num{width:74px;text-align:center}
-.in-name{font-weight:600;min-width:140px}
-.in-loi{min-height:34px;line-height:1.4}
-.stt{color:var(--muted);font-weight:600;text-align:center;width:36px}
-.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
-.pill.good{background:var(--good-soft);color:var(--good)}
-.pill.kha{background:var(--kha-soft);color:var(--kha)}
-.pill.tb{background:var(--tb-soft);color:var(--tb)}
-.pill.yeu{background:var(--yeu-soft);color:var(--yeu)}
-.conlai{font-weight:700;font-variant-numeric:tabular-nums}
-.diem-tru{color:var(--yeu);font-weight:600;font-variant-numeric:tabular-nums}
-.row-act{display:flex;gap:4px;align-items:center}
-.icon-btn{width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:#fff;
-  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);
-  transition:all .15s;flex:none}
-.icon-btn:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
-.icon-btn.del:hover{color:var(--yeu);border-color:var(--yeu);background:var(--yeu-soft)}
-.add-row{padding:12px 18px;text-align:center}
-.add-row .btn{width:100%;justify-content:center}
-.readonly-note{padding:10px 18px;background:var(--kha-soft);color:var(--kha);font-size:12.5px;font-weight:600;
-  border-bottom:1px solid var(--border)}
-
-.loi-view{position:relative;cursor:pointer;max-height:3.1em;overflow:hidden;line-height:1.45;transition:max-height .2s;
-  padding-right:22px;white-space:pre-wrap;word-break:break-word}
-.loi-view.open{max-height:none;overflow:visible}
-.loi-view .chev{position:absolute;right:2px;top:2px;color:var(--accent);transition:transform .2s}
-.loi-view.open .chev{transform:rotate(180deg)}
-.loi-view.short{cursor:default;padding-right:0}
-.loi-view.short .chev{display:none}
-.loi-view:not(.open):not(.short)::after{content:'';position:absolute;left:0;right:22px;bottom:0;height:1.1em;background:linear-gradient(to bottom,rgba(255,255,255,0),#fff);pointer-events:none}
-
-.sum-bar{height:8px;border-radius:999px;background:#eee;overflow:hidden;min-width:80px}
-.sum-bar > div{height:100%;border-radius:999px;transition:width .4s}
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding:16px 18px;
-  border-bottom:1px solid var(--border)}
-.stat{background:#faf9f4;border:1px solid var(--border);border-radius:12px;padding:12px 14px}
-.stat .k{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.stat .v{font-family:'Baloo 2',cursive;font-size:24px;font-weight:700;margin-top:2px}
-.stat .v small{font-size:13px;color:var(--muted);font-weight:500}
-
-.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
-@media(max-width:820px){.ref-grid{grid-template-columns:1fr}}
-.ref-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.ref-card h3{font-family:'Baloo 2',cursive;font-size:14.5px;font-weight:700;padding:12px 16px;
-  border-bottom:1px solid var(--border);background:#f6f5ef}
-.ref-card ul{list-style:none;max-height:280px;overflow-y:auto}
-.ref-card li{display:flex;justify-content:space-between;gap:10px;padding:8px 16px;font-size:13px;
-  border-bottom:1px solid var(--border)}
-.ref-card li:last-child{border-bottom:none}
-.ref-card li .pts{font-weight:700;color:var(--yeu);white-space:nowrap;font-variant-numeric:tabular-nums}
-.ref-card li .lv{font-weight:600;white-space:nowrap}
-
-.fab{position:fixed;right:20px;bottom:20px;z-index:40;width:56px;height:56px;border-radius:50%;
-  background:var(--accent2);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;
-  justify-content:center;box-shadow:0 6px 20px rgba(217,119,6,.4);transition:transform .15s}
-.fab:hover{transform:scale(1.06)}
-.fab .count{position:absolute;top:-4px;right:-4px;background:var(--yeu);color:#fff;font-size:11px;
-  font-weight:700;min-width:20px;height:20px;border-radius:999px;display:flex;align-items:center;
-  justify-content:center;padding:0 5px;border:2px solid var(--bg)}
-/* 02.4 - BẢNG VI PHẠM, CỬA SỔ CÀI ĐẶT VÀ THÔNG BÁO */
-.panel-overlay{position:fixed;inset:0;background:rgba(15,23,42,.35);z-index:50;opacity:0;pointer-events:none;
-  transition:opacity .2s}
-.panel-overlay.open{opacity:1;pointer-events:auto}
-.panel{position:fixed;top:0;right:0;bottom:0;width:min(400px,92vw);background:var(--card);z-index:51;
-  transform:translateX(105%);transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;
-  box-shadow:-10px 0 40px rgba(15,23,42,.15)}
-.panel.open{transform:translateX(0)}
-.panel-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;
-  justify-content:space-between;gap:10px}
-.panel-head h3{font-family:'Baloo 2',cursive;font-size:16px;font-weight:700}
-.panel-tabs{display:flex;gap:4px;padding:10px 14px 0;border-bottom:1px solid var(--border)}
-.panel-tab{flex:1;padding:8px;border:none;background:transparent;font:inherit;font-size:12.5px;font-weight:600;
-  color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px}
-.panel-tab.active{color:var(--accent2);border-bottom-color:var(--accent2)}
-.panel-body{flex:1;overflow-y:auto;padding:12px 14px}
-.v-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);
-  border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .15s;background:#fff}
-.v-item:hover{border-color:var(--accent2);background:var(--accent2-soft)}
-.v-item .num{width:26px;height:26px;border-radius:8px;background:var(--accent2-soft);color:var(--accent2);
-  font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none}
-.v-item .nm{flex:1;font-size:13px;font-weight:500}
-.v-item .pt{font-weight:700;color:var(--yeu);font-size:13px;white-space:nowrap}
-.v-item.no-click{cursor:default}
-.v-item.no-click:hover{border-color:var(--border);background:#fff}
-.log-member{margin-bottom:14px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.log-member .mh{padding:9px 12px;background:#f6f5ef;font-weight:700;font-size:13px;display:flex;
-  justify-content:space-between;align-items:center}
-.log-member .mh .tot{font-size:11.5px;color:var(--yeu);font-weight:700}
-.log-member .wk{padding:8px 12px;border-top:1px solid var(--border);font-size:12.5px}
-.log-member .wk .wl{font-weight:700;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
-.log-member .wk .wl.c{color:var(--accent)}
-.log-empty{text-align:center;color:var(--muted);font-size:13px;padding:30px 10px}
-.panel-target{padding:8px 14px;background:var(--accent2-soft);color:var(--accent2);font-size:12.5px;
-  font-weight:600;border-bottom:1px solid var(--border)}
-
-.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:60;display:flex;
-  align-items:center;justify-content:center;padding:18px}
-.modal{width:100%;max-width:780px;max-height:90vh;background:var(--card);border-radius:18px;
-  display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.25)}
-.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;
-  justify-content:space-between}
-.modal-head h3{font-family:'Baloo 2',cursive;font-size:18px;font-weight:700}
-.modal-tabs{display:flex;gap:4px;padding:10px 20px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.modal-tab{padding:7px 12px;border:none;background:transparent;font:inherit;font-size:12.5px;font-weight:600;
-  color:var(--muted);cursor:pointer;border-radius:8px 8px 0 0;border-bottom:2.5px solid transparent;margin-bottom:-1px}
-.modal-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.modal-body{flex:1;overflow-y:auto;padding:20px 22px;background:#fbfcfa}
-.sec{margin-bottom:18px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:0 2px 8px rgba(15,23,42,.025)}
-.sec h4{display:flex;align-items:center;gap:8px;color:var(--text);font-size:13px;letter-spacing:.02em;text-transform:none;margin-bottom:5px}
-.sec .sec-hint{font-size:12px;color:var(--muted);margin-bottom:12px}
-.admin-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eef1ed}
-.admin-row:last-of-type{border-bottom:0}
-.admin-row input{min-width:0;width:100%;padding:9px 11px;border:1px solid #dfe5df;border-radius:9px;font:inherit;font-size:13px;background:#fcfdfb;outline:none}
-.admin-row input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px var(--accent-soft)}
-.admin-row .w-pts{max-width:90px}
-.admin-add{margin-top:13px!important;padding:9px 14px!important}
-#adminTabs{background:#fff;position:sticky;top:0;z-index:2}
-.admin-scope{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px;padding:13px;background:#f1f6f2;border:1px solid #dce8de;border-radius:13px}
-.admin-scope .field{margin:0;min-width:0}
-.admin-scope .field label{font-size:11.5px;font-weight:700;color:#52645a}
-.admin-scope .field select{min-width:0;width:100%;padding:10px 30px 10px 10px;border:1.5px solid #d5e1d7;border-radius:9px;background:#fff;font:inherit;font-size:13px;color:var(--text)}
-.admin-scope .field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-@media(max-width:640px){.admin-scope{grid-template-columns:1fr;gap:8px;padding:10px}.admin-scope .field{display:grid;grid-template-columns:62px minmax(0,1fr);align-items:center;gap:8px}.admin-scope .field label{margin:0}}
-@media(max-width:640px){.modal-overlay{padding:7px}.modal{max-height:96vh;border-radius:14px}.modal-body{padding:12px}.sec{padding:13px}.modal-tabs{padding:8px 10px 0}.modal-tab{font-size:11.5px;padding:7px 9px}.admin-row{gap:7px}}
-.sec:not(.admin-section) h4{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;
-  margin-bottom:10px}
-.field{margin-bottom:10px}
-.field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:4px}
-.field input,.field select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;
-  font:inherit;font-size:13.5px;outline:none;background:#fff}
-.field input:focus{border-color:var(--accent)}
-.field .row{display:flex;gap:8px}
-.field .row input{flex:1}
-.list-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--border)}
-.list-row input{flex:1;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font:inherit;
-  font-size:13px;outline:none}
-.list-row input.w-pts{flex:0 0 70px;text-align:center}
-.toggle{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);
-  border-radius:10px;margin-bottom:10px;cursor:pointer}
-.toggle input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
-.toggle .tl{font-size:13.5px;font-weight:600}
-.toggle .td{font-size:12px;color:var(--muted)}
-.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;
-  flex-wrap:wrap}
-.link-box{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;
-  word-break:break-all;background:#faf9f4;color:var(--text);user-select:all;max-height:120px;overflow:auto}
-
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);
-  color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:100;opacity:0;
-  pointer-events:none;transition:all .25s;display:flex;align-items:center;gap:8px}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* 02.5 - TỐI ƯU GIAO DIỆN TRÊN ĐIỆN THOẠI */
-@media(max-width:640px){
-  .app{padding:12px 10px 120px}
-  .brand h1{font-size:16px}
-  .tab{padding:8px 11px;font-size:12.5px}
-  .stat-grid{grid-template-columns:1fr 1fr}
-  .login-card{padding:24px 18px}
-  .select{max-width:110px;font-size:12px;padding:7px 8px}
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -355,6 +71,7 @@ table.tbl tr:hover td{background:#fcfbf7}
       <span class="badge" id="roleBadge"></span>
       <button class="btn btn-ghost btn-sm" data-act="refreshNow" title="Tải dữ liệu mới nhất"><i data-lucide="refresh-cw" style="width:14px;height:14px"></i>Làm mới</button>
       <button class="btn btn-soft btn-sm" data-act="saveNow"><i data-lucide="save" style="width:14px;height:14px"></i>Lưu</button>
+      <button class="btn btn-ghost btn-sm" data-act="syncLink" title="Xem trạng thái đồng bộ Cloud"><i data-lucide="cloud" style="width:14px;height:14px"></i><span class="sync-dot" id="syncDot" style="width:7px;height:7px;margin-left:-2px"></span></button>
       <span id="dirtyInd" class="hidden" style="color:var(--yeu);font-size:12px;font-weight:700;white-space:nowrap">● Chưa lưu</span>
       <button class="btn btn-ghost btn-sm hidden" id="backupBtn" data-act="exportData" title="Xuất file sao lưu (JSON)"><i data-lucide="download" style="width:14px;height:14px"></i>Sao lưu</button>
       <button class="btn btn-ghost btn-sm hidden" id="adminBtn" data-act="openAdmin"><i data-lucide="settings" style="width:14px;height:14px"></i>Cài Đặt</button>
@@ -424,7 +141,38 @@ table.tbl tr:hover td{background:#fcfbf7}
 
 
 
-<!-- 03.5 - THÀNH PHẦN DÙNG CHUNG: NHẬP FILE VÀ THÔNG BÁO -->
+<!-- 03.5 - MODAL ĐỒNG BỘ CLOUD -->
+<div class="modal-overlay hidden" id="syncModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head">
+      <h3>☁ Đồng bộ Cloud</h3>
+      <button class="icon-btn" data-act="closeSync"><i data-lucide="x" style="width:18px;height:18px"></i></button>
+    </div>
+    <div class="modal-body" style="padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="sync-dot" id="syncDot"></span>
+        <span id="syncStatusText" style="font-size:13px;color:var(--muted)">Đang kiểm tra…</span>
+      </div>
+      <div id="syncQuotaInfo" style="font-size:12.5px;color:var(--muted);background:var(--accent-soft);border-radius:8px;padding:8px 12px"></div>
+      <div style="font-size:13px;color:var(--muted);background:#f6f5ef;border-radius:8px;padding:8px 12px">
+        💡 Dữ liệu đồng bộ tối đa <strong>1 lần/90 giây</strong> để tránh vượt giới hạn dịch vụ Cloud (200 lần/ngày). Dữ liệu luôn được lưu trên máy ngay lập tức.
+      </div>
+      <div>
+        <label style="font-size:12.5px;color:var(--muted);display:block;margin-bottom:4px">Link đồng bộ (chia sẻ link này để xem cùng thiết bị khác)</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <code id="syncLinkBox" style="flex:1;font-size:12px;background:#f6f5ef;padding:8px 10px;border-radius:8px;overflow-wrap:anywhere;word-break:break-all;border:1px solid var(--border)"></code>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-act="newSyncTopic"><i data-lucide="refresh-cw" style="width:14px;height:14px"></i>Tạo link mới</button>
+      <button class="btn btn-soft" data-act="copySyncLink"><i data-lucide="copy" style="width:14px;height:14px"></i>Sao chép link</button>
+      <button class="btn btn-primary" data-act="closeSync">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- 03.6 - THÀNH PHẦN DÙNG CHUNG: NHẬP FILE VÀ THÔNG BÁO -->
 <input type="file" id="importFile" accept="application/json" class="hidden">
 <div class="toast" id="toast"></div>
 
@@ -772,6 +520,59 @@ table.tbl tr:hover td{background:#fcfbf7}
             return false;
         }
     }
+    /* ---------- rate-limit publish để tránh vượt quota ntfy.sh (250 msg/giờ, 1000 msg/ngày) ---------- */
+    var MIN_PUBLISH_INTERVAL = 90000; // tối thiểu 90 giây giữa 2 lần POST lên ntfy
+    var lastPublishTime = 0;          // timestamp lần publish thành công gần nhất
+    var pendingPublishTimer = null;   // timer chờ hết cooldown rồi publish
+    var QUOTA_LS_KEY = 'ntfyQuota_v1';
+    function getQuota() {
+        try {
+            var q = JSON.parse(localStorage.getItem(QUOTA_LS_KEY) || 'null');
+            var today = new Date().toISOString().slice(0, 10);
+            if (!q || q.date !== today) return { date: today, count: 0 };
+            return q;
+        } catch (e) { return { date: new Date().toISOString().slice(0, 10), count: 0 }; }
+    }
+    function bumpQuota() {
+        var q = getQuota();
+        q.count++;
+        try { localStorage.setItem(QUOTA_LS_KEY, JSON.stringify(q)); } catch (e) {}
+        updateQuotaUI(q);
+    }
+    function updateQuotaUI(q) {
+        q = q || getQuota();
+        var el = document.getElementById('syncQuotaInfo');
+        if (!el) return;
+        var remaining = Math.max(0, 200 - q.count); // dự phòng an toàn ở mức 200/ngày
+        el.textContent = 'Lần đồng bộ hôm nay: ' + q.count + ' / 200 (còn ' + remaining + ')';
+        el.style.color = remaining < 20 ? 'var(--yeu)' : remaining < 50 ? 'var(--accent2)' : 'var(--muted)';
+    }
+    // Wrapper: publish có rate-limit; force=true bỏ qua cooldown (nút bấm thủ công)
+    function rateLimitedPublish(force) {
+        var now = Date.now();
+        var quota = getQuota();
+        if (quota.count >= 200) {
+            showToast('⚠ Đã đạt giới hạn đồng bộ hôm nay (200 lần). Dữ liệu vẫn lưu trên máy, ngày mai tự đồng bộ tiếp.');
+            setSyncStatus(false);
+            var el = document.getElementById('syncStatusText');
+            if (el) el.textContent = 'Đã hết quota đồng bộ hôm nay — dữ liệu vẫn lưu trên máy, sẽ tiếp tục ngày mai';
+            return;
+        }
+        var elapsed = now - lastPublishTime;
+        if (!force && elapsed < MIN_PUBLISH_INTERVAL) {
+            // Chưa đến cooldown → đặt timer để gửi khi hết cooldown
+            if (!pendingPublishTimer) {
+                var wait = MIN_PUBLISH_INTERVAL - elapsed;
+                pendingPublishTimer = setTimeout(function () {
+                    pendingPublishTimer = null;
+                    if (state.dirty) rateLimitedPublish(false);
+                }, wait);
+            }
+            return;
+        }
+        if (pendingPublishTimer) { clearTimeout(pendingPublishTimer); pendingPublishTimer = null; }
+        publishSync();
+    }
     var cloudRetryTimer = null, cloudRetryCount = 0, cloudSending = false;
     function scheduleCloudRetry() {
         if (cloudRetryTimer) return;
@@ -788,6 +589,8 @@ table.tbl tr:hover td{background:#fcfbf7}
         var ok = await publishCompressed(getSyncTopic());
         cloudSending = false;
         if (ok) {
+            lastPublishTime = Date.now();
+            bumpQuota();
             state.dirty = false;
             cloudRetryCount = 0;
             if (cloudRetryTimer) clearTimeout(cloudRetryTimer);
@@ -941,8 +744,8 @@ table.tbl tr:hover td{background:#fcfbf7}
         writeLocalDB(snapshot).catch(function () { /* không làm gián đoạn thao tác của người dùng */ });
     }
     function markDirty() { state.dirty = true; var d = document.getElementById('dirtyInd'); if (d) d.classList.remove('hidden'); }
-    function saveDebounce() { clearTimeout(saveTimer); clearTimeout(cloudSaveTimer); saveTimer = setTimeout(function () { persist(); markDirty(); cloudSaveTimer = setTimeout(function () { if (navigator.onLine !== false) publishSync(); }, 1200); }, 500); }
-    function saveNow() { persist(); markDirty(); publishSync(); }
+    function saveDebounce() { clearTimeout(saveTimer); clearTimeout(cloudSaveTimer); saveTimer = setTimeout(function () { persist(); markDirty(); cloudSaveTimer = setTimeout(function () { if (navigator.onLine !== false) rateLimitedPublish(false); }, 1200); }, 500); }
+    function saveNow() { persist(); markDirty(); rateLimitedPublish(true); }
     var toastTimer = null;
     function showToast(msg) {
         var t = document.getElementById('toast');
@@ -1558,7 +1361,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             var line = formatViolationItem({ id: v.id });
             state.lastUndo = { mid: mid, week: state.week, line: line, vid: v.id };
             persist();
-            publishSync();
+            rateLimitedPublish(false);
             renderApp();
             renderPanel();
             showToast('Đã ghi: ' + v.name);
@@ -1583,7 +1386,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             updateViolationRecord(removeRec);
             state.lastUndo = null;
             persist();
-            publishSync();
+            rateLimitedPublish(false);
             renderApp();
             renderPanel();
             showToast(removedViolation ? 'Đã thu hồi: ' + removedViolation.name : 'Đã thu hồi lỗi vi phạm');
@@ -1607,7 +1410,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             }
             state.lastUndo = null;
             persist();
-            publishSync();
+            rateLimitedPublish(false);
             renderApp();
             renderPanel();
             showToast(idx >= 0 ? 'Đã thu hồi lỗi vừa ghi' : 'Không tìm thấy lỗi (có thể đã sửa tay)');
@@ -1618,7 +1421,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             if (nm && nm.trim()) {
                 curMonth().members.push({ id: uid(), name: nm.trim() });
                 persist();
-                publishSync();
+                rateLimitedPublish(false);
                 renderApp();
                 if (state.adminOpen)
                     renderAdmin();
@@ -1633,7 +1436,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                 WEEKS.forEach(function (w) { if (mm.weeks[w])
                     delete mm.weeks[w].recs[mid2]; });
                 persist();
-                publishSync();
+                rateLimitedPublish(false);
                 renderApp();
                 if (state.adminOpen)
                     renderAdmin();
@@ -1661,7 +1464,7 @@ table.tbl tr:hover td{background:#fcfbf7}
         if (act === 'addViol') {
             data.violations.push({ id: uid(), name: 'Hành vi vi phạm mới', diem: 2 });
             persist();
-            publishSync();
+            rateLimitedPublish(false);
             renderAdmin();
             renderRefs();
             return;
@@ -1686,7 +1489,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                 });
             });
             persist();
-            publishSync();
+            rateLimitedPublish(false);
             renderAdmin();
             renderRefs();
             return;
@@ -1694,7 +1497,7 @@ table.tbl tr:hover td{background:#fcfbf7}
         if (act === 'addThresh') {
             data.thresholds.push({ bac: 'Bậc mới', min: 0 });
             persist();
-            publishSync();
+            rateLimitedPublish(false);
             renderAdmin();
             renderRefs();
             return;
@@ -1703,7 +1506,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             var idx = parseInt(el.dataset.idx, 10);
             data.thresholds.splice(idx, 1);
             persist();
-            publishSync();
+            rateLimitedPublish(false);
             renderAdmin();
             renderRefs();
             return;
@@ -1728,7 +1531,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                     : data.lops[ln].tos[state.to].monthOrder[0];
                 state.week = 'Tuần 1';
                 persist();
-                publishSync();
+                rateLimitedPublish(false);
                 renderApp();
                 if (state.adminOpen)
                     renderAdmin();
@@ -1752,7 +1555,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                     state.week = 'Tuần 1';
                 }
                 persist();
-                publishSync();
+                rateLimitedPublish(false);
                 renderApp();
                 renderAdmin();
                 showToast('Đã xóa lớp');
@@ -1787,7 +1590,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                 state.month = newTeam.monthOrder.indexOf(state.month) >= 0 ? state.month : newTeam.monthOrder[0];
                 state.week = 'Tuần 1';
                 persist();
-                publishSync();
+                rateLimitedPublish(false);
                 renderApp();
                 if (state.adminOpen)
                     renderAdmin();
@@ -1810,7 +1613,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                     state.week = 'Tuần 1';
                 }
                 persist();
-                publishSync();
+                rateLimitedPublish(false);
                 renderApp();
                 renderAdmin();
                 showToast('Đã xóa tổ');
@@ -1835,7 +1638,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                 });
                 state.month = mn2;
                 persist();
-                publishSync();
+                rateLimitedPublish(false);
                 renderApp();
                 if (state.adminOpen)
                     renderAdmin();
@@ -1860,7 +1663,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                     state.month = getClassMonthOrder(classForDelete)[0];
                 ensureMonthForTo(curTo(), state.month);
                 persist();
-                publishSync();
+                rateLimitedPublish(false);
                 renderApp();
                 renderAdmin();
                 showToast('Đã xóa tháng');
@@ -1875,7 +1678,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             }
             data.adminPass = np;
             persist();
-            publishSync();
+            rateLimitedPublish(false);
             document.getElementById('newAdminPass').value = '';
             showToast('Đã đổi mật khẩu quản trị');
             return;
@@ -1894,7 +1697,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             }
             data.editors.push({ user: nu, pass: np2 });
             persist();
-            publishSync();
+            rateLimitedPublish(false);
             document.getElementById('newEditorUser').value = '';
             document.getElementById('newEditorPass').value = '';
             renderAdmin();
@@ -1905,7 +1708,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             var ix = parseInt(el.dataset.idx, 10);
             data.editors.splice(ix, 1);
             persist();
-            publishSync();
+            rateLimitedPublish(false);
             renderAdmin();
             showToast('Đã xóa tài khoản');
             return;
@@ -1957,7 +1760,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                 state.to = data.lops[state.lop].toOrder[0];
                 state.month = data.lops[state.lop].tos[state.to].monthOrder[0];
                 persist();
-                publishSync();
+                rateLimitedPublish(false);
                 renderApp();
                 if (state.adminOpen)
                     renderAdmin();
@@ -1969,6 +1772,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             var base = location.href.split('#')[0];
             document.getElementById('syncLinkBox').textContent = base + '#sync=' + getSyncTopic();
             setSyncStatus(state.syncOk);
+            updateQuotaUI();
             document.getElementById('syncModal').classList.remove('hidden');
             return;
         }
@@ -1996,7 +1800,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                 state.lastKnownRemoteV = 0;
                 state.lastPublishedSid = 0;
                 persist();
-                publishSync();
+                rateLimitedPublish(false);
                 var base2 = location.href.split('#')[0];
                 document.getElementById('syncLinkBox').textContent = base2 + '#sync=' + nt;
                 showToast('Đã tạo link đồng bộ mới');
@@ -2031,7 +1835,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             }
             state.week = 'Tuần 1';
             persist();
-            publishSync();
+            rateLimitedPublish(false);
             renderApp();
             renderAdmin();
             return;
@@ -2082,7 +1886,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                         state.to = data.lops[state.lop].toOrder[0];
                         state.month = data.lops[state.lop].tos[state.to].monthOrder[0];
                         persist();
-                        publishSync();
+                        rateLimitedPublish(false);
                         renderApp();
                         if (state.adminOpen)
                             renderAdmin();
@@ -2155,7 +1959,7 @@ table.tbl tr:hover td{background:#fcfbf7}
             if (ab === 'allowPublicEdit') {
                 data.allowPublicEdit = el.checked;
                 persist();
-                publishSync();
+                rateLimitedPublish(false);
                 renderApp();
                 return;
             }
@@ -2171,7 +1975,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                         state.lop = newL;
                     el.dataset.lop = newL;
                     persist();
-                    publishSync();
+                    rateLimitedPublish(false);
                     renderApp();
                 }
                 return;
@@ -2189,7 +1993,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                         state.to = newK;
                     el.dataset.to = newK;
                     persist();
-                    publishSync();
+                    rateLimitedPublish(false);
                     renderApp();
                 }
                 return;
@@ -2210,7 +2014,7 @@ table.tbl tr:hover td{background:#fcfbf7}
                     if (state.month === old) state.month = nw;
                     el.dataset.month = nw;
                     persist();
-                    publishSync();
+                    rateLimitedPublish(false);
                     renderAdmin();
                 }
                 return;
@@ -2293,7 +2097,7 @@ table.tbl tr:hover td{background:#fcfbf7}
     restoreLocalDB();
     window.addEventListener('online', function () {
         setSyncStatus(true);
-        if (state.dirty) publishSync();
+        if (state.dirty) rateLimitedPublish(false);
         else pollSync();
     });
     window.addEventListener('offline', function () { setSyncStatus(false); });
